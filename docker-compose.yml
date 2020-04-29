@@ -1,0 +1,35 @@
+version: "3.7"
+
+services:
+    elasticsearch:
+        image: elasticsearch:7.6.2
+        container_name: wiki_elasticsearch
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+        environment:
+            - discovery.type=single-node
+        ulimits:
+            memlock:
+                soft: -1
+                hard: -1
+        volumes:
+            - "elastic_lucene:/usr/share/elasticsearch/data"
+    logstash:
+        image: logstash:7.6.2
+        container_name: wiki_logstash
+        volumes:
+            - "./enwikibooks-20200301-pages-articles.xml:/mnt/enwikibooks-20200301-pages-articles.xml"
+            - "./logstash/pipeline/enwikibooks.conf:/usr/share/logstash/pipeline/logstash.conf"
+        ports:
+            - "5000:5000"
+            - "9600:9600"
+    # comment if you dont want to explore lucene indexes
+    kibana:
+        image: kibana:7.6.2
+        container_name: wiki_kibana
+        ports:
+            - "5601:5601"
+
+volumes:
+    elastic_lucene:
