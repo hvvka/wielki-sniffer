@@ -1,5 +1,6 @@
 <template>
   <v-app id="inspire">
+    <Chips v-model="value" />
     <v-icon>insert_emoticon</v-icon>
     <v-icon>mdi-account-lock</v-icon>
     <v-navigation-drawer
@@ -50,6 +51,7 @@
     },
     data: () => ({
       drawer: null,
+      value: '',
     }),
   }
 </script>
