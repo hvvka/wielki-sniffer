@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify';
 import primevue from './plugins/primevue'
+import animatecss from './plugins/animatecss'
 
 Vue.config.productionTip = false
 
@@ -12,5 +13,6 @@ new Vue({
   store,
   vuetify,
   primevue,
+  animatecss,
   render: h => h(App)
 }).$mount('#app')

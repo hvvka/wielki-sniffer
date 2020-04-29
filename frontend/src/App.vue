@@ -18,7 +18,12 @@
     </v-app-bar>
 
     <v-content>
-      <router-view/>
+      <transition name="custom_animation"
+                  enter-active-class="animated zoomIn"
+                  leave-active-class="animated zoomOut"
+                  :duration="600">
+        <router-view/>
+      </transition>
     </v-content>
 
     <v-footer>
