@@ -3,7 +3,7 @@
     <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" app color="blue darken-3" dark>
       <v-container fluid>
           <v-row justify="center" align="end">
-            <v-col cols="5">
+            <v-col cols="6">
             <v-text-field flat solo-inverted hide-details prepend-inner-icon="mdi-magnify" label="Search"
                           class="hidden-sm-and-down" />
             </v-col>

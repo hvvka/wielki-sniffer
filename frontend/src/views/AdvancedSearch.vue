@@ -1,122 +1,71 @@
 <template>
     <v-container fluid>
-        <v-row>
-            <v-col cols="12">
-                <v-row align="center" justify="center">
-                    <div>
-                        <Chips v-model="value" />
-                        <h1>Advanced search</h1>
-                        <v-row no-gutters v-for="i in titleAlternatives.length + 1" :key="i">
-                            <v-col sm="1">
-                                <v-card class="pa-2" flat>
-                                    <span v-if="i > 1">Or</span>
-                                </v-card>
+        <v-row align="center" justify="center">
+            <v-col cols="6">
+                <v-row>
+                    <v-col>
+                        <h1 class="header-panel">Advanced search</h1>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col cols="2">
+                        <span>Title</span>
+                    </v-col>
+                    <v-col cols="10" class="p-fluid">
+                        <Chips v-model="title"/>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col cols="2">
+                        <span>Text</span>
+                    </v-col>
+                    <v-col cols="10" class="p-fluid">
+                        <Chips v-model="text"/>
+                    </v-col>
+                </v-row>
+
+                <v-row justify="center">
+                    <v-col cols="2">
+                        Publication date
+                    </v-col>
+                    <v-col>
+                        <v-row justify="center" class="p-fluid">
+                            <v-col cols="6">
+                                <Calendar v-model="fromDate" :showButtonBar="true" :show-icon="true" />
                             </v-col>
-                            <v-col sm="11">
-                                <v-card class="pa-2" flat>
-                                    <v-text-field label="Title" v-model="titleAlternatives[i-1]"></v-text-field>
-                                </v-card>
+                            <v-col cols="6">
+                                <Calendar v-model="toDate" :showButtonBar="true" :show-icon="true" />
                             </v-col>
                         </v-row>
+                    </v-col>
+                </v-row>
 
-                        <v-row no-gutters v-for="i in textAlternatives.length + 1" :key="i">
-                            <v-col sm="1">
-                                <v-card class="pa-2" flat>
-                                    <span v-if="i > 1">Or</span>
-                                </v-card>
-                            </v-col>
-                            <v-col sm="11">
-                                <v-card class="pa-2" flat>
-                                    <v-text-field label="Text" v-model="textAlternatives[i-1]"></v-text-field>
-                                </v-card>
-                            </v-col>
-                        </v-row>
+                <v-row>
+                    <v-col cols="2">
+                        <span>Category</span>
+                    </v-col>
+                    <v-col cols="10" class="p-fluid">
+                        <AutoComplete :multiple="true" v-model="categories"
+                                      :suggestions="categorySuggestions"
+                                      @complete="suggestCategories($event) "/>
+                    </v-col>
+                </v-row>
 
+                <v-row>
+                    <v-col cols="2">
+                        <span>Contributor</span>
+                    </v-col>
+                    <v-col cols="10" class="p-fluid">
+                        <AutoComplete :multiple="true" v-model="contributors"
+                                      :suggestions="contributorSuggestions"
+                                      @complete="suggestContributors($event)" />
+                    </v-col>
+                </v-row>
 
-                        <v-row no-gutters v-for="i in textAlternatives.length + 1" :key="i">
-                            <v-col sm="1">
-                                <v-card class="pa-2" flat>
-                                </v-card>
-                            </v-col>
-                            <v-col sm="4">
-                                <v-card class="pa-2" flat>
-                                    <v-menu
-                                            v-model="menu1"
-                                            :close-on-content-click="false"
-                                            :nudge-right="40"
-                                            transition="scale-transition"
-                                            offset-y
-                                            min-width="290px"
-                                    >
-                                        <template v-slot:activator="{ on }">
-                                            <v-text-field
-                                                    v-model="date"
-                                                    label="Publication date from"
-                                                    readonly
-                                                    v-on="on"
-                                            ></v-text-field>
-                                        </template>
-                                        <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
-                                    </v-menu>
-                                </v-card>
-                            </v-col>
-                            <v-col sm="4">
-                                <v-card class="pa-2" flat>
-                                    <v-menu
-                                            v-model="menu2"
-                                            :close-on-content-click="false"
-                                            :nudge-right="40"
-                                            transition="scale-transition"
-                                            offset-y
-                                            min-width="290px"
-                                    >
-                                        <template v-slot:activator="{ on }">
-                                            <v-text-field
-                                                    v-model="date"
-                                                    label="Publication date to"
-                                                    readonly
-                                                    v-on="on"
-                                            ></v-text-field>
-                                        </template>
-                                        <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
-                                    </v-menu>
-                                </v-card>
-                            </v-col>
-                        </v-row>
-
-
-                        <v-row no-gutters>
-                            <v-col sm="1">
-                                <v-card class="pa-2" flat>
-
-                                </v-card>
-                            </v-col>
-                            <v-col sm="4">
-                                <v-card class="pa-2" flat>
-                                    <v-select
-                                            v-model="contributors"
-                                            :items="items"
-                                            chips
-                                            label="Contributors includes"
-                                            multiple
-                                            outlined
-                                    ></v-select>
-                                </v-card>
-                            </v-col>
-                            <v-col sm="4">
-                                <v-card class="pa-2" flat>
-                                    <v-select
-                                            v-model="contributors2"
-                                            :items="items"
-                                            chips
-                                            label="Contributors excludes"
-                                            multiple
-                                            outlined
-                                    ></v-select>
-                                </v-card>
-                            </v-col>
-                        </v-row>
-                    </div>
+                <v-row justify="end">
+                    <v-btn outlined color="blue">Search</v-btn>
                 </v-row>
             </v-col>
         </v-row>
@@ -127,15 +76,24 @@
     export default {
         data() {
             return {
-                titleAlternatives: [],
-                textAlternatives: [],
-                menu1: '',
-                menu2: '',
-                date: '',
-                contributors: '',
-                contributors2: '',
-                items: ['Jan kowalski', 'inny ziomek'],
-                value: '',
+                title: [],
+                text: [],
+                fromDate: null,
+                toDate: null,
+                contributors: [],
+                contributorSuggestions: [],
+                categories: [],
+                categorySuggestions: []
+            }
+        },
+        methods: {
+            suggestContributors(event) {
+                console.log(event);
+                this.contributorSuggestions = ['user1', 'user2', 'user3']
+            },
+            suggestCategories(event) {
+                console.log(event);
+                this.categorySuggestions = ['Automotive']
             }
         }
     }
