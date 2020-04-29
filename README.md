@@ -6,11 +6,9 @@
 ```
 
 ### Run
-
 ```
 docker-compose up -d
 ```
-
 ### Check ELK
 Perform HTTP Request (check your elasticsearch IP!)
 ```
@@ -38,4 +36,9 @@ should return:
         "categories": ["Organic Chemistry"],
         "text": [" Welcome to the world s foremost open content Organic Chemistry Textbook on the web!  <br> cellpadding \" 5 \"  <br> - <br> Organic Chemistry Go nbsp ; to nbsp ; contents nbsp ; 
 ...
+```
+### Frontend icons:
+```
+    <v-icon>insert_emoticon</v-icon> : https://material.io/resources/icons
+    <v-icon>mdi-account-lock</v-icon> : https://materialdesignicons.com/
 ```

@@ -1,6 +1,7 @@
 <template>
   <v-app id="inspire">
-    <v-icon>event</v-icon>
+    <v-icon>insert_emoticon</v-icon>
+    <v-icon>mdi-account-lock</v-icon>
     <v-navigation-drawer
             v-model="drawer"
             :clipped="$vuetify.breakpoint.lgAndUp"
