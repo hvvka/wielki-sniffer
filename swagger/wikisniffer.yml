@@ -1,0 +1,319 @@
+swagger: "2.0"
+info:
+  description: "This is an API for Wiki Sniffer - modern Wikibooks search engine"
+  version: "1.0"
+  title: "Wiki Sniffer"
+host: "localhost:8080"
+basePath: "/v1"
+tags:
+- name: "book"
+  description: "Access books"
+- name: "search"
+  description: "Look up in books"
+schemes:
+- "https"
+- "http"
+paths:
+  /book/{id}:
+    get:
+      tags:
+      - "book"
+      summary: "Get book by identifier"
+      operationId: "getBook"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Book unique identifier"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successfully loaded book"
+          schema:
+            $ref: "#/definitions/Book"
+        "404":
+          description: "Book not found"
+        "500":
+          description: "Unexpected server error"
+  /search:
+    get:
+      tags:
+      - "search"
+      summary: "Quicksearch in title and text"
+      operationId: "quicksearch"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "query"
+        in: "query"
+        type: "string"
+        description: "Query string (eg. car repair)"
+      responses:
+        "200":
+          description: "Succesfully loaded search results"
+          schema:
+            $ref: '#/definitions/ResultPage'
+        "500":
+          description: "Unexpected server error"
+    post:
+      tags:
+      - "search"
+      summary: "Advanced search"
+      operationId: "advancedSearch"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Advanced search query"
+        required: true
+        schema:
+          $ref: "#/definitions/AdvancedQuery"
+      responses:
+        "200":
+          description: "Successfully loaded book"
+          schema:
+            $ref: '#/definitions/ResultPage'
+        "500":
+          description: "Unexpected server error"
+  /search/mini:
+    get:
+      tags:
+      - "search"
+      summary: "Quicksearch prompts"
+      operationId: "minisearch"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "query"
+        in: "query"
+        type: "string"
+        description: "Query string (eg. car repair)"
+      responses:
+        "200":
+          description: "Books prompting for query"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/BookMini"
+        "500":
+          description: "Unexpected server error"
+definitions:
+  Book:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 34
+      title:
+        type: "string"
+        example: "Changing the oil and oil filter"
+      categories:
+        type: "array"
+        items:
+          type: "string"
+        example: ["Automobile Repair", "Nissan", "Maxima (4th Generation)"]
+      contributor:
+        type: "string"
+        example: "johnny45"
+      timestamp:
+        type: "string"
+        format: "date-time"
+      coverImage:
+        type: "string"
+        example: "https://upload.wikimedia.org/wikipedia/commons/6/60/Squirrel_002.JPG"
+      contents:
+        type: "array"
+        items:
+          $ref: "#/definitions/Chapter"
+      text:
+        type: "string"
+        example: '<div class="mw-parser-output">
+                  <p>
+                    <b>Changing you oil/filter</b> regularly is one of the most important things you can do to keep your engine running.  It should be done between 3,000 miles and 7,000 miles depending on how the car is driven.  
+                  </p>
+                  <ul><li>New oil filter</li>
+                  <li>Oil filter wrench</li>
+                  <li>A medium size adjustable wrench or a metric socket set.</li>
+                  <li>5 quarts of new engine oil</li></ul>
+                </div>'
+  BookResult:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 34
+      title:
+        type: "string"
+        example: "Changing the oil and oil filter"
+      categories:
+        type: "array"
+        items:
+          type: "string"
+        example: ["Automobile Repair", "Nissan", "Maxima (4th Generation)"]
+      contributor:
+        type: "string"
+        example: "johnny45"
+      timestamp:
+        type: "string"
+        format: "date-time"
+      coverImage:
+        type: "string"
+        example: "https://upload.wikimedia.org/wikipedia/commons/6/60/Squirrel_002.JPG"
+      contents:
+        type: "array"
+        items:
+          $ref: "#/definitions/Chapter"
+  BookMini:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        example: 34
+      title:
+        type: "string"
+        example: "Changing the oil and oil filter"
+      categories:
+        type: "array"
+        items:
+          type: "string"
+        example: ["Automobile Repair", "Nissan", "Maxima (4th Generation)"]
+      coverImage:
+        type: "string"
+        example: "https://upload.wikimedia.org/wikipedia/commons/6/60/Squirrel_002.JPG"
+  Chapter:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "Intriduction"
+      chapters:
+        type: "array"
+        items:
+          $ref: "#/definitions/SubChapter"
+  SubChapter:
+    type: "object"
+    description: "Same as chapter, needed to show chapter nesting"
+    properties:
+      name:
+        type: "string"
+        example: "About"
+      chapters:
+        type: "array"
+        items:
+          $ref: "#/definitions/Chapter"
+  Facet:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "Automobile Repair"
+      count:
+        type: "integer"
+        example: 15
+  DateRange:
+    type: "object"
+    properties:
+      from:
+        type: "string"
+        format: "date-time"
+      to:
+        type: "string"
+        format: "date-time"
+  SortField:
+    type: "object"
+    properties:
+      field:
+        type: "string"
+        enum: 
+        - "relevance"
+        - "timestamp"
+      direction:
+        type: "string"
+        enum:
+        - "asc"
+        - "desc"
+  FilterField:
+    type: "object"
+    properties:
+      field: 
+        type: "string"
+        enum:
+        - "category"
+        - "contributor"
+      value:
+        type: "string"
+        example: "Automobile Repair"
+  SearchField:
+    type: "object"
+    properties:
+      field:
+        type: "string"
+        enum: 
+        - "title"
+        - "text"
+        - "contributor"
+        - "category"
+      should:
+        type: "array"
+        items:
+          $ref: '#/definitions/SearchTerm'
+  SearchTerm:
+    type: "object"
+    properties:
+      must:
+        type: "array"
+        items:
+          type: "string"
+        example: ["car", "repair", "mercedes w202"]
+      not:
+        type: "boolean"
+        example: false
+  ResultPage:
+    type: "object"
+    properties:
+      resultCount:
+        type: "integer"
+        example: 67
+      pageCount:
+        type: "integer"
+        example: 5
+      pageNumber:
+        type: "integer"
+        example: 2
+      books:
+        type: "array"
+        items:
+          $ref: '#/definitions/BookResult'
+      categories:
+        type: "array"
+        items:
+          $ref: '#/definitions/Facet'
+      contributors:
+        type: "array"
+        items:
+          $ref: '#/definitions/Facet'
+      timestampRange:
+        $ref: '#/definitions/DateRange'
+  AdvancedQuery:
+    type: "object"
+    properties:
+      timestampRange:
+        $ref: '#/definitions/DateRange'
+      sortField:
+        $ref: '#/definitions/SortField'
+      filterFields:
+        type: "array"
+        items:
+          $ref: '#/definitions/FilterField'
+      searchFields:
+        type: "array"
+        items:
+          $ref: '#/definitions/SearchField'
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

@@ -32,6 +32,14 @@ services:
         container_name: wiki_kibana
         ports:
             - "5601:5601"
-
+    swagger:
+        container_name: swagger
+        image: swaggerapi/swagger-ui
+        ports:
+            - "8081:8080"
+        volumes:
+            - "./swagger:/swagger"
+        environment:
+            - SWAGGER_JSON=/swagger/wikisniffer.yml
 volumes:
     elastic_lucene:

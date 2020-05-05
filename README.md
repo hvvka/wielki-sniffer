@@ -47,3 +47,6 @@ should return:
     <v-icon>insert_emoticon</v-icon> : https://material.io/resources/icons
     <v-icon>mdi-account-lock</v-icon> : https://materialdesignicons.com/
 ```
+
+## Swagger
+Available at port `8081` eg. `http://localhost:8081`
