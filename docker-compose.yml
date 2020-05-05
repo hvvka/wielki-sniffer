@@ -18,8 +18,10 @@ services:
     logstash:
         image: logstash:7.6.2
         container_name: wiki_logstash
+        user: root
+        command: sh -c "exec /mnt/datasource.sh"
         volumes:
-            - "./enwikibooks-20200301-pages-articles.xml:/mnt/enwikibooks-20200301-pages-articles.xml"
+            - "./datasource/:/mnt/"
             - "./logstash/pipeline/enwikibooks.conf:/usr/share/logstash/pipeline/logstash.conf"
         ports:
             - "5000:5000"
