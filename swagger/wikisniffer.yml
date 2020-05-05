@@ -80,12 +80,12 @@ paths:
             $ref: '#/definitions/ResultPage'
         "500":
           description: "Unexpected server error"
-  /search/mini:
+  /search/hint:
     get:
       tags:
       - "search"
-      summary: "Quicksearch prompts"
-      operationId: "minisearch"
+      summary: "Quicksearch hints"
+      operationId: "hintSearch"
       produces:
       - "application/json"
       parameters:
@@ -95,11 +95,11 @@ paths:
         description: "Query string (eg. car repair)"
       responses:
         "200":
-          description: "Books prompting for query"
+          description: "Book hints for query"
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/BookMini"
+              $ref: "#/definitions/BookHint"
         "500":
           description: "Unexpected server error"
 definitions:
@@ -168,7 +168,7 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Chapter"
-  BookMini:
+  BookHint:
     type: "object"
     properties:
       id:
