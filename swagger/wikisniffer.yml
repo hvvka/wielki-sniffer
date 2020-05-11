@@ -234,21 +234,21 @@ definitions:
       field:
         type: "string"
         enum: 
-        - "relevance"
-        - "timestamp"
+        - "RELEVANCE"
+        - "TIMESTAMP"
       direction:
         type: "string"
         enum:
-        - "asc"
-        - "desc"
+        - "ASC"
+        - "DESC"
   FilterField:
     type: "object"
     properties:
       field: 
         type: "string"
         enum:
-        - "category"
-        - "contributor"
+        - "CATEGORY"
+        - "CONTRIBUTOR"
       value:
         type: "string"
         example: "Automobile Repair"
@@ -258,10 +258,10 @@ definitions:
       field:
         type: "string"
         enum: 
-        - "title"
-        - "text"
-        - "contributor"
-        - "category"
+        - "TITLE"
+        - "TEXT"
+        - "CONTRIBUTOR"
+        - "CATEGORY"
       should:
         type: "array"
         items:
