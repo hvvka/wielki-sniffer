@@ -1,0 +1,14 @@
+{
+  "properties": [
+    {
+      "name": "wikibooks.api.url",
+      "type": "java.lang.String",
+      "description": "Base URL for Wikibooks API."
+    },
+    {
+      "name": "elasticsearch.api.url",
+      "type": "java.lang.String",
+      "description": "Elasticsearch instance API URL."
+    }
+  ]
+}

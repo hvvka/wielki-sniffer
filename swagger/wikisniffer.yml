@@ -93,6 +93,10 @@ paths:
         in: "query"
         type: "string"
         description: "Query string (eg. car repair)"
+      - name: "hintCount"
+        in: "query"
+        type: "integer"
+        description: "How many hints to fetch"
       responses:
         "200":
           description: "Book hints for query"

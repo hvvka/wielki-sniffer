@@ -15,6 +15,15 @@ services:
                 hard: -1
         volumes:
             - "elastic_lucene:/usr/share/elasticsearch/data"
+    backend:
+        container_name: backend
+        build:
+            context: ./backend
+            dockerfile: Dockerfile
+        ports:
+            - "8080:8080"
+        depends_on:
+            - elasticsearch
     logstash:
         image: logstash:7.6.2
         container_name: wiki_logstash
