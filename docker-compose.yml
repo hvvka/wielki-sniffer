@@ -50,5 +50,12 @@ services:
             - "./swagger:/swagger"
         environment:
             - SWAGGER_JSON=/swagger/wikisniffer.yml
+    frontend:
+        container_name: frontend
+        build:
+            context: frontend
+            dockerfile: Dockerfile
+        ports:
+            - "9090:80"
 volumes:
     elastic_lucene:
