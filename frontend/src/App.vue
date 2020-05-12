@@ -36,13 +36,16 @@
     </v-content>
 
     <v-footer>
+      <router-link to="/page/:id">
+        <span style="color: black; font-size: 9px;">Sample page</span>
+      </router-link>
+       |
+      <router-link to="/search-results">
+        <span style="color: black; font-size: 9px;">SERP</span>
+      </router-link>
       <v-spacer></v-spacer>
       <router-link to="/about">
         <span style="color: black;">About</span>
-      </router-link>
-      <v-spacer></v-spacer>
-      <router-link to="/page/:id">
-        <span style="color: black;">Sample page</span>
       </router-link>
       <v-spacer></v-spacer>
       <div>&copy; {{ new Date().getFullYear() }}</div>

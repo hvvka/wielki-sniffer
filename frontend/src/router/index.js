@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import AdvancedSearch from '../views/AdvancedSearch.vue'
 import ResultPreviewPage from "../views/ResultPreviewPage";
+import SearchEngineResultPage from "../views/SearchEngineResultPage";
 
 Vue.use(VueRouter);
 
@@ -16,6 +17,11 @@ const routes = [
         name: 'Document preview',
         component: ResultPreviewPage,
         props: true
+    },
+    {
+        path: '/search-results',
+        name: 'Search Engine Result Page',
+        component: SearchEngineResultPage
     },
     {
         path: '/about',
