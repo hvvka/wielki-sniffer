@@ -5,11 +5,12 @@ import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 
 import Chips from 'primevue/chips'
+import Calendar from 'primevue/calendar'
+import AutoComplete from 'primevue/autocomplete';
+
 Vue.component('Chips', Chips);
 
-import Calendar from 'primevue/calendar'
-Vue.component('Calendar', Calendar)
+Vue.component('Calendar', Calendar);
 
-import AutoComplete from 'primevue/autocomplete';
-Vue.component('AutoComplete', AutoComplete)
+Vue.component('AutoComplete', AutoComplete);
 

@@ -41,6 +41,10 @@
         <span style="color: black;">About</span>
       </router-link>
       <v-spacer></v-spacer>
+      <router-link to="/page/:id">
+        <span style="color: black;">Sample page</span>
+      </router-link>
+      <v-spacer></v-spacer>
       <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
   </v-app>

@@ -7,7 +7,7 @@ import primevue from './plugins/primevue'
 import animatecss from './plugins/animatecss'
 import vueAxios from './plugins/axios'
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 new Vue({
   router,
@@ -17,4 +17,4 @@ new Vue({
   animatecss,
   vueAxios,
   render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');

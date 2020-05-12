@@ -1,23 +1,23 @@
 # e9s-fe
 
 ## Project setup
-```
-npm install
+```bash
+$ npm install
 ```
 
 ### Compiles and hot-reloads for development
-```
-npm run serve
+```bash
+$ npm run serve
 ```
 
 ### Compiles and minifies for production
-```
-npm run build
+```bash
+$ npm run build
 ```
 
 ### Lints and fixes files
-```
-npm run lint
+```bash
+$ npm run lint
 ```
 
 ### Customize configuration

@@ -33,10 +33,10 @@
                     <v-col>
                         <v-row justify="center" class="p-fluid">
                             <v-col cols="6">
-                                <Calendar v-model="fromDate" :showButtonBar="true" :show-icon="true" />
+                                <Calendar :show-icon="true" :showButtonBar="true" v-model="fromDate"/>
                             </v-col>
                             <v-col cols="6">
-                                <Calendar v-model="toDate" :showButtonBar="true" :show-icon="true" />
+                                <Calendar :show-icon="true" :showButtonBar="true" v-model="toDate"/>
                             </v-col>
                         </v-row>
                     </v-col>
@@ -60,7 +60,7 @@
                     <v-col cols="10" class="p-fluid">
                         <AutoComplete :multiple="true" v-model="contributors"
                                       :suggestions="contributorSuggestions"
-                                      @complete="suggestContributors($event)" />
+                                      @complete="suggestContributors($event)"/>
                     </v-col>
                 </v-row>
 

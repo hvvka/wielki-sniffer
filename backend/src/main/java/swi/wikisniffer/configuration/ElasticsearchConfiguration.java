@@ -19,6 +19,7 @@ public class ElasticsearchConfiguration extends AbstractElasticsearchConfigurati
     @Value("${elasticsearch.api.url}")
     private String elasticsearchHost;
 
+    @Override
     @Bean
     public EntityMapper entityMapper() {
         ElasticsearchEntityMapper entityMapper = new ElasticsearchEntityMapper(elasticsearchMappingContext(),
