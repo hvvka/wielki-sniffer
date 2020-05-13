@@ -3,14 +3,12 @@ package swi.wikisniffer.book.controller;
 import java.util.List;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import swi.wikisniffer.book.model.dto.BookHint;
 import swi.wikisniffer.book.service.Searcher;
 
 @RestController
+@CrossOrigin(origins = "${allowedOrigins}")
 @RequestMapping("/v1/search")
 public class SearchController {
 
