@@ -257,7 +257,7 @@ definitions:
       field: 
         type: "string"
         enum:
-        - "CATEGORY"
+        - "CATEGORIES"
         - "CONTRIBUTOR"
       value:
         type: "string"
@@ -271,7 +271,7 @@ definitions:
         - "TITLE"
         - "TEXT"
         - "CONTRIBUTOR"
-        - "CATEGORY"
+        - "CATEGORIES"
       should:
         type: "array"
         items:
