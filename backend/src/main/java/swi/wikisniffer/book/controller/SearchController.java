@@ -1,16 +1,20 @@
 package swi.wikisniffer.book.controller;
 
-import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import swi.wikisniffer.book.model.dto.BookHint;
 import swi.wikisniffer.book.service.Searcher;
 
+import java.util.List;
+
 @RestController
 @CrossOrigin(origins = "${allowedOrigins}")
 @RequestMapping("/v1/search")
 public class SearchController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
 
     private final Searcher searcher;
 
@@ -20,9 +24,10 @@ public class SearchController {
 
     @GetMapping(value = "/hint", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<BookHint> getHints(
-            @RequestParam(defaultValue = "") String query,
-            @RequestParam(defaultValue = "3") int hintCount
+            @RequestParam(defaultValue = "${request.defaultQuery}") String query,
+            @RequestParam(defaultValue = "${request.defaultHintCount}") int hintCount
     ) {
+        LOG.info("GET {} hints for query '{}'", hintCount, query);
         return searcher.getHints(query, hintCount);
     }
 }

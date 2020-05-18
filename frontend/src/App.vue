@@ -36,7 +36,7 @@
     </v-content>
 
     <v-footer>
-      <router-link to="/page/:id">
+      <router-link to="/page/7">
         <span style="color: black; font-size: 9px;">Sample page</span>
       </router-link>
        |

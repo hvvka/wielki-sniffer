@@ -3,6 +3,7 @@ package swi.wikisniffer.book.model.dto;
 import java.util.List;
 
 public class BookHint {
+
     private String id;
     private String title;
     private List<String> categories;
@@ -34,7 +35,6 @@ public class BookHint {
 
     public BookHint setCategories(List<String> categories) {
         this.categories = categories;
-
         return this;
     }
 
@@ -44,7 +44,16 @@ public class BookHint {
 
     public BookHint setCoverImage(String coverImage) {
         this.coverImage = coverImage;
-
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "BookHint{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", categories=" + categories +
+                ", coverImage='" + coverImage + '\'' +
+                '}';
     }
 }

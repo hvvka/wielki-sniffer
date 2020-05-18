@@ -1,13 +1,17 @@
 <template>
     <v-container fluid>
-        <h1 class="header-panel">{{title}} (document id={{id}})</h1>
-        <div class="card-subtitle mb-2 text-muted">{{categories.join(' > ')}}</div>
-        <div class="panel-group">
-            <div :key="chapter.title" class="panel panel-default" v-for="chapter in chapters">
-                <h3 class="panel-heading">{{ chapter.title }}</h3>
-                <p class="panel-body">{{ chapter.text }}</p>
+        <div class="card">
+            <img alt="" class="card-img-top" src="https://picsum.photos/1920/300?random">
+            <div class="card-body">
+                <h1 class="card-title">{{title}}</h1>
+                <div class="card-subtitle mb-2 text-muted">Last edited: {{timestamp}}</div>
+                <div class="card-header" v-if="categories">{{categories.join(' > ')}}</div>
+                <div class="card-body">
+                    <p class="card-text" v-html="text"/>
+                </div>
             </div>
         </div>
+        <a class="card-link" href="#">Back</a>
     </v-container>
 </template>
 
@@ -17,32 +21,37 @@
         name: "ResultPreviewPage",
         data() {
             return {
-                title: "Rust in W202",
-                categories: ["Motorization", "Cars", "Mercedes", "Rust"],
-                chapters:
-                    [
-                        {
-                            title: "Rust in trunk",
-                            text: "All that city... You just couldn't see an end to it. The end! Please, could you show me where it ends? It was all very fine on that gangway and I was grand, too, in my overcoat. I cut quite a figure and I had no doubts about getting off. Guaranteed. That wasn't a problem. It wasn't what I saw that stopped me, Max. It was what I didn't see. Can you understand that? What I didn't see. In all that sprawling city, there was everything except an end. There was everything. But there wasn't an end. What I couldn't see was where all that came to an end. The end of the world. Take a piano. The keys begin, the keys end. You know there are 88 of them and no-one can tell you differently. They are not infinite, you are infinite. And on those 88 keys the music that you can make is infinite. I like that. That I can live by."
-                        },
-                        {
-                            title: "Rust in suspension",
-                            text: "But you get me up on that gangway and roll out a keyboard with millions of keys, and that's the truth, there's no end to them, that keyboard is infinite. But if that keyboard is infinite there's no music you can play. You're sitting on the wrong bench. That's God's piano. Christ, did you see the streets? There were thousands of them! How do you choose just one? One woman, one house, one piece of land to call your own, one landscape to look at, one way to die. All that world weighing down on you without you knowing where it ends. Aren't you scared of just breaking apart just thinking about it, the enormity of living in it? I was born on this ship."
-                        },
-                        {
-                            title: "Rust in bodywork",
-                            text: "The world passed me by, but two thousand people at a time. And there were wishes here, but never more than could fit on a ship, between prow and stern. You played out your happiness on a piano that was not infinite. I learned to live that way. Land is a ship too big for me. It's a woman too beautiful. It's a voyage too long. Perfume too strong. It's music I don't know how to make. I can't get off this ship. At best, I can step off my life. After all, it's as though I never existed. You're the exception, Max. You're the only one who knows that I'm here. You're a minority. You'd better get used to it. Forgive me, my friend. But I'm not getting off."
-                        }
-                    ]
+                image: "",
+                title: "",
+                timestamp: new Date().toLocaleString(),
+                categories: [],
+                chapters: [],
+                text: ""
             }
         },
-        methods: {
-            /* TODO: load before the page, test with backend */
-            getBook(id) {
-                this.axios.get('http://localhost:8080/v1/book/' + id)
-            }
-        }
+        created: async function () {
+            // const xd = sampleData;
+            const xd = (await this.axios.get('http://localhost:8080/v1/book/' + this.id)).data;
+            this.image = xd.image;
+            this.title = xd.title;
+            this.timestamp = new Date(xd.timestamp).toLocaleString();
+            this.categories = xd.categories || "";
+            // TODO: this.chapters = xd.
+            this.text = xd.text;
+        },
+        methods: {}
     }
+
+    // eslint-disable-next-line no-unused-vars
+    const sampleData = {
+        "id": "7",
+        "title": "Foundational concepts of organic chemistry",
+        "firstImage": "Go To Organic Chemistry Contents .png",
+        "text": " The purpose of this section is to review topics from freshman General Chemistry chemistry and build the foundation for further studies in organic chemistry . <br> Organic Chemistry \\/ Foundational concepts of organic chemistry \\/ History of organic chemistry History of organic chemistry stage short 100% Jan 12 , 2005  <br> Organic chemistry \\/ Foundational concepts of organic chemistry \\/ Atomic structure Atomic structure stage short 100% Jan 12 , 2005  <br> Organic Chemistry \\/ Foundational concepts of organic chemistry \\/ Electronegativity Electronegativity stage short 100% April 28 , 2006  <br> Organic Chemistry \\/ Foundational concepts of organic chemistry \\/ Bonding Bonding stage short 100% April 28 , 2006  <br> Organic Chemistry \\/ Foundational concepts of organic chemistry \\/ Electron dot structures Electron dot structures stage short 100% April 28 , 2006  <br> Organic Chemistry \\/ Foundational concepts of organic chemistry \\/ Visualization Visualization stage short 75% November 12 , 2006  <br> Organic Chemistry \\/ Foundational concepts of organic chemistry \\/ Resonance Resonance stage short 100% April 28 , 2006  <br> Organic Chemistry \\/ Foundational concepts of organic chemistry \\/ Acids and bases Acids and bases stage short 100% April 28 , 2006  <br> Organic_Chemistry \\/ Foundational_concepts_of_organic_chemistry \\/ Nomenclature Nomenclature stage short 100% Nov 25 , 2006  <br> ---- <br> <img src=https://upload.wikimedia.org/wikipedia/commons/a/aa/Go_To_Organic_Chemistry_Contents.png alt=\"Go_To_Organic_Chemistry_Contents.png\"> Organic Chemistry \\/ Alkanes Alkanes  <br> BookCat ",
+        "categories": ["Organic Chemistry"],
+        "timestamp": "2010-09-02T06:08:27Z"
+    };
+
 </script>
 
 <style scoped>
