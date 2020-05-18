@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import swi.wikisniffer.book.model.dto.BookHint;
-import swi.wikisniffer.book.service.Searcher;
+import swi.wikisniffer.book.service.BookService;
 
 import java.util.List;
 
@@ -16,10 +16,10 @@ public class SearchController {
 
     private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
 
-    private final Searcher searcher;
+    private final BookService bookService;
 
-    public SearchController(Searcher searcher) {
-        this.searcher = searcher;
+    public SearchController(BookService bookService) {
+        this.bookService = bookService;
     }
 
     @GetMapping(value = "/hint", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -28,6 +28,6 @@ public class SearchController {
             @RequestParam(defaultValue = "${request.defaultHintCount}") int hintCount
     ) {
         LOG.info("GET {} hints for query '{}'", hintCount, query);
-        return searcher.getHints(query, hintCount);
+        return bookService.getBookHints(query, hintCount);
     }
 }
