@@ -62,7 +62,8 @@
     methods: {
       hintClickedHandler(inputValue) {
         if (typeof inputValue === 'object') { // or alternativly this.hints.includes(inputValue)
-          console.log('hint: ' + JSON.stringify(inputValue))
+          console.log('hint: ' + JSON.stringify(inputValue));
+          this.$router.push(`/page/${inputValue.id}`);
         } else {
           console.log("custom:" + inputValue);
         }
