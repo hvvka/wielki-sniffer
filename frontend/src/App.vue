@@ -64,6 +64,7 @@
         if (typeof inputValue === 'object') { // or alternativly this.hints.includes(inputValue)
           console.log('hint: ' + JSON.stringify(inputValue));
           this.$router.push(`/page/${inputValue.id}`);
+          this.$router.go();
         } else {
           console.log("custom:" + inputValue);
         }
