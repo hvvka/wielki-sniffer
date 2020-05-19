@@ -7,6 +7,9 @@ import 'primeicons/primeicons.css';
 import Chips from 'primevue/chips'
 Vue.component('Chips', Chips);
 
+import Chips2 from '../components/primevue_custom/Chips2'
+Vue.component('Chips2', Chips2);
+
 import Calendar from 'primevue/calendar'
 Vue.component('Calendar', Calendar);
 

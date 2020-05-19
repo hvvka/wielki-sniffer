@@ -13,7 +13,7 @@
                         <span>Title</span>
                     </v-col>
                     <v-col cols="10" class="p-fluid">
-                        <Chips v-model="title"/>
+                        <Chips2 v-model="title" v-bind:notValue="notTitle" v-on:notInput="notTitle = $event"/>
                     </v-col>
                 </v-row>
 
@@ -22,7 +22,7 @@
                         <span>Text</span>
                     </v-col>
                     <v-col cols="10" class="p-fluid">
-                        <Chips v-model="text"/>
+                        <Chips2 v-model="text" v-bind:notValue="notText" v-on:notInput="notText = $event"/>
                     </v-col>
                 </v-row>
 
@@ -77,7 +77,9 @@
         data() {
             return {
                 title: [],
+                notTitle: [],
                 text: [],
+                notText: [],
                 fromDate: null,
                 toDate: null,
                 contributors: [],
