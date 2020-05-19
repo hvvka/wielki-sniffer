@@ -2,7 +2,18 @@ export default {
     lastPerformedSearchWasSimple: null, // this flag is used in fetching more data method to know if get
                                         // next page using searchQuery or searchData
     searchQuery: null,                  // last search query string
-    searchData: null,                   // last search request body
+    searchData: {
+        timestampRange: {
+            from: null,
+            to: null
+        },
+        sortField: {
+            field: "RELEVANCE",
+            direction: "ASC"
+        },
+        filterFields: [],
+        searchFields: []
+    },                   // last search request body
     searchResults: null,                // actual displaying data
     searchPageNumber: 0,                // last fetched page
     searchPageSize: 10,                 // how many pages per result. should be changed programmatically

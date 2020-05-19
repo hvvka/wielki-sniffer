@@ -1,6 +1,8 @@
 <template>
     <v-container fluid>
         <v-row align="center" justify="center">
+            {{requestBody}}<br />
+            {{title}}
             <v-col cols="6">
                 <v-row>
                     <v-col>
@@ -85,7 +87,38 @@
                 contributors: [],
                 contributorSuggestions: [],
                 categories: [],
-                categorySuggestions: []
+                categorySuggestions: [],
+                requestBody: {
+                    timestampRange: {
+                        from: "2020-05-19T22:05:18.093Z",
+                        to: "2020-05-19T22:05:18.093Z"
+                    },
+                    sortField: {
+                        field: "RELEVANCE",
+                        direction: "ASC"
+                    },
+                    filterFields: [
+                        {
+                            field: "CATEGORIES",
+                            value: "Automobile Repair"
+                        }
+                    ],
+                    searchFields: [
+                        {
+                            field: "TITLE",
+                            should: [
+                                {
+                                    must: [
+                                        "car",
+                                        "repair",
+                                        "mercedes w202"
+                                    ],
+                                    not: false
+                                }
+                            ]
+                        }
+                    ]
+                }
             }
         },
         methods: {
@@ -98,14 +131,58 @@
                 this.categorySuggestions = ['Automotive']
             },
             searchButtonClickHandler() {
-                this.$store.dispatch('simpleSearch', 'Mercedes W202')
-                    .then(() => {
-                        this.$router.push({ name: 'Search Engine Result Page'})
-                    })
-                    .catch(error => {
-                        console.error(error);
-                        console.error('Something went absolutely wrong. You should consider restarting computer.');
-                    })
+                this.requestBody = this.buildRequestBody();
+                // this.$store.dispatch('simpleSearch', 'Mercedes W202')
+                //     .then(() => {
+                //         this.$router.push({ name: 'Search Engine Result Page'})
+                //     })
+                //     .catch(error => {
+                //         console.error(error);
+                //         console.error('Something went absolutely wrong. You should consider restarting computer.');
+                //     })
+            },
+            buildRequestBody() {
+                let requestBody = {
+                    timestampRange: {
+                        from: this.fromDate,
+                        to: this.toDate
+                    },
+                    sortField: {
+                        field: "RELEVANCE",
+                        direction: "ASC"
+                    },
+                    filterFields: [],
+                    searchFields: []
+                };
+                if (this.title !== []) {
+
+                    var mustTitle = [];
+                    var tmp = '';
+
+                    this.title.forEach(el => {
+                        console.log(1);
+                        var splitted = el.split(' ');
+                        splitted.forEach(el => {
+                            if (el.startsWith('"')) tmp = el;
+                            else if (tmp !== '') { mustTitle.push(tmp + " " + el); tmp = ''; }
+                            else mustTitle.push(el);
+                        });
+                        requestBody.searchFields.push({
+                            field: "TITLE",
+                            should: [
+                                {
+                                    must: mustTitle,
+                                    not: this.notTitle.includes(el)
+                                }
+                            ]
+                        });
+                        mustTitle = [];
+                        tmp = '';
+                    });
+                }
+
+
+                return requestBody;
             }
         }
     }
