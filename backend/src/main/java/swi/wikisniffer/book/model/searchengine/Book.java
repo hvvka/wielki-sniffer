@@ -1,11 +1,12 @@
 package swi.wikisniffer.book.model.searchengine;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Document(indexName = "enwikibooks", type = "_doc")
 public class Book {
@@ -24,7 +25,7 @@ public class Book {
     private String text;
 
     @Field(name = "categories", type = FieldType.Nested)
-    private List<String> categories;
+    private List<String> categories = new ArrayList<>();
 
     @Field(name = "timestamp", type = FieldType.Text)
     private String timestamp;
