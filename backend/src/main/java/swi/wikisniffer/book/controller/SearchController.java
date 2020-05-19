@@ -9,7 +9,6 @@ import swi.wikisniffer.book.model.dto.AdvancedQuery;
 import swi.wikisniffer.book.model.dto.BookHint;
 import swi.wikisniffer.book.model.dto.ResultPage;
 import swi.wikisniffer.book.service.BookService;
-import swi.wikisniffer.book.service.impl.Searcher;
 
 @RestController
 @CrossOrigin(origins = "${allowedOrigins}")
@@ -17,11 +16,9 @@ import swi.wikisniffer.book.service.impl.Searcher;
 public class SearchController {
 
     private final BookService bookService;
-    private final Searcher searcher;
 
-    public SearchController(BookService bookService, Searcher searcher) {
+    public SearchController(BookService bookService) {
         this.bookService = bookService;
-        this.searcher = searcher;
     }
 
     @GetMapping(value = "/hint", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -32,12 +29,21 @@ public class SearchController {
         return bookService.getBookHints(query, hintCount);
     }
 
+    @GetMapping(value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResultPage search(
+            @RequestParam(defaultValue = "${request.defaultQuery}") String query,
+            @RequestParam(defaultValue = "${request.defaultPageNumber}") int pageNumber,
+            @RequestParam(defaultValue = "${request.defaultPageSize}") int pageSize
+    ) throws ParseException {
+        return bookService.getBooks(query, pageNumber, pageSize);
+    }
+
     @PostMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResultPage search(
             @RequestBody AdvancedQuery query,
             @RequestParam(defaultValue = "${request.defaultPageNumber}") int pageNumber,
             @RequestParam(defaultValue = "${request.defaultPageSize}") int pageSize
     ) throws ParseException {
-        return searcher.getBooks(query, pageNumber, pageSize);
+        return bookService.getBooks(query, pageNumber, pageSize);
     }
 }

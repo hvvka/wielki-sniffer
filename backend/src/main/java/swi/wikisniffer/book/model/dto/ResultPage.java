@@ -1,5 +1,6 @@
 package swi.wikisniffer.book.model.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ResultPage {
@@ -10,6 +11,13 @@ public class ResultPage {
     private List<Facet> categories;
     private List<Facet> contributors;
     private DateRange timestampRange;
+
+    public ResultPage() {
+        books = new ArrayList<>(0);
+        categories = new ArrayList<>(0);
+        contributors = new ArrayList<>(0);
+        timestampRange = new DateRange();
+    }
 
     public long getResultCount() {
         return resultCount;

@@ -24,6 +24,11 @@
       "name": "request.defaultPageNumber",
       "type": "java.lang.String",
       "description": "Default page number to fetch."
+    },
+    {
+      "name": "search.maxPageSize",
+      "type": "java.lang.String",
+      "description": "Maximum page size for search results."
     }
   ]
 }

@@ -1,7 +1,5 @@
 package swi.wikisniffer.book.service.impl;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,17 +9,15 @@ import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.max.MaxAggregationBuilder;
 import org.elasticsearch.search.aggregations.metrics.min.MinAggregationBuilder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.aggregation.AggregatedPage;
 import org.springframework.stereotype.Service;
 import swi.wikisniffer.book.model.dto.AdvancedQuery;
-import swi.wikisniffer.book.model.dto.BookHint;
-import swi.wikisniffer.book.model.dto.ResultPage;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.repository.BookRepository;
-import swi.wikisniffer.book.service.ResultPageMapper;
 import swi.wikisniffer.query.service.QuerySplitter;
 
 import static swi.wikisniffer.book.repository.AggregateField.*;
@@ -29,48 +25,53 @@ import static swi.wikisniffer.book.repository.AggregateField.*;
 @Service
 public class Searcher {
 
-    public static final int MAX_PAGE_SIZE = 100;
-
     private final QuerySplitter querySplitter;
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
-    private final ResultPageMapper resultPageMapper;
+
+    @Value("${search.maxPageSize}")
+    private Integer maxPageSize;
 
     public Searcher(
         QuerySplitter querySplitter,
         BookRepository bookRepository,
-        BookMapper bookMapper,
-        ResultPageMapper resultPageMapper
+        BookMapper bookMapper
     ) {
         this.querySplitter = querySplitter;
         this.bookRepository = bookRepository;
         this.bookMapper = bookMapper;
-        this.resultPageMapper = resultPageMapper;
     }
 
-    public List<BookHint> getHints(String query, int hintCount) {
-        if (query.isEmpty()) {
-            return new ArrayList<>(0);
-        }
-
+    public Page<Book> getHints(String query, int hintCount) {
         List<String> terms = escapeJsonCharacters(querySplitter.split(query));
         Pageable firstHits = PageRequest.of(0, hintCount);
-        Page<Book> books = bookRepository.findByTitleInOrTextIn(terms, terms, firstHits);
 
-        return bookMapper.mapToHints(books.getContent());
+        return bookRepository.findByTitleInOrTextIn(terms, terms, firstHits);
     }
 
-    public ResultPage getBooks(AdvancedQuery query, int pageNumber, int pageSize) throws ParseException {
-        pageSize = Math.min(pageSize, MAX_PAGE_SIZE);
+    public AggregatedPage<Book> getBooks(String query, int pageNumber, int pageSize) {
+        pageSize = Math.min(pageSize, maxPageSize);
+        List<String> terms = escapeJsonCharacters(querySplitter.split(query));
+        Pageable pageRequest = PageRequest.of(pageNumber, pageSize);
+
+        return bookRepository.getBooks(terms, pageRequest, getResultPageAggregations());
+    }
+
+    public AggregatedPage<Book> getBooks(AdvancedQuery query, int pageNumber, int pageSize) {
+        pageSize = Math.min(pageSize, maxPageSize);
         Pageable firstHits = PageRequest.of(pageNumber, pageSize);
+
+        return bookRepository.getBooks(query, firstHits, getResultPageAggregations());
+    }
+
+    private List<AbstractAggregationBuilder<?>> getResultPageAggregations() {
         List<AbstractAggregationBuilder<?>> aggregations = new LinkedList<>();
         aggregations.add(getMaxTimestampAggregation());
         aggregations.add(getMinTimestampAggregation());
         aggregations.add(getCategoriesAggregation());
         aggregations.add(getContributorAggregation());
-        AggregatedPage<Book> page = bookRepository.getBooks(query, firstHits, aggregations);
 
-        return resultPageMapper.mapToResultPage(page);
+        return aggregations;
     }
 
     private MaxAggregationBuilder getMaxTimestampAggregation() {

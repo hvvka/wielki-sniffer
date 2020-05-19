@@ -12,4 +12,8 @@ public interface AdvancedBookRepository {
     AggregatedPage<Book> getBooks(AdvancedQuery advancedQuery,
                                   Pageable pageable,
                                   List<AbstractAggregationBuilder<?>> aggregations);
+
+    AggregatedPage<Book> getBooks(List<String> queryTerms,
+                                  Pageable pageable,
+                                  List<AbstractAggregationBuilder<?>> aggregations);
 }

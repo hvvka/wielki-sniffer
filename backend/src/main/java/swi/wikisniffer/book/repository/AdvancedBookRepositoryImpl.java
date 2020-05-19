@@ -34,6 +34,32 @@ public class AdvancedBookRepositoryImpl implements AdvancedBookRepository {
         this.elasticsearchTemplate = elasticsearchTemplate;
     }
 
+    public AggregatedPage<Book> getBooks(
+            List<String> queryTerms,
+            Pageable pageable,
+            List<AbstractAggregationBuilder<?>> aggregations
+    ) {
+        BoolQueryBuilder bookQuery = QueryBuilders.boolQuery();
+        BoolQueryBuilder titleQuery = QueryBuilders.boolQuery();
+        BoolQueryBuilder textQuery = QueryBuilders.boolQuery();
+
+        queryTerms.forEach(term -> {
+            titleQuery.must(getFieldLevelQuery(Field.TITLE, term));
+            textQuery.must(getFieldLevelQuery(Field.TEXT, term));
+        });
+
+        bookQuery.should(titleQuery);
+        bookQuery.should(textQuery);
+
+        NativeSearchQueryBuilder query = new NativeSearchQueryBuilder()
+                .withQuery(bookQuery)
+                .withPageable(pageable);
+
+        aggregations.forEach(query::addAggregation);
+
+        return elasticsearchTemplate.queryForPage(query.build(), Book.class);
+    }
+
     @Override
     public AggregatedPage<Book> getBooks(
             AdvancedQuery advancedQuery,
