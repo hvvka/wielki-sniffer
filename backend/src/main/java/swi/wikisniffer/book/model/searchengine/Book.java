@@ -1,14 +1,16 @@
 package swi.wikisniffer.book.model.searchengine;
 
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-import java.util.List;
-
 @Document(indexName = "enwikibooks", type = "_doc")
 public class Book {
+    public static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+
     @Id
     private String id;
 
@@ -26,6 +28,9 @@ public class Book {
 
     @Field(name = "timestamp", type = FieldType.Text)
     private String timestamp;
+
+    @Field(name = "contributor_name", type = FieldType.Text)
+    private String contributor;
 
     public String getId() {
         return id;
@@ -73,6 +78,14 @@ public class Book {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getContributor() {
+        return contributor;
+    }
+
+    public void setContributor(String contributor) {
+        this.contributor = contributor;
     }
 
     @Override

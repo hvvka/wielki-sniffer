@@ -1,14 +1,14 @@
 package swi.wikisniffer.book.service.wikibooks;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class WikibooksClient {
@@ -71,14 +71,13 @@ public class WikibooksClient {
             return "{}";
         }
 
-        String reducedNames = imagesNames.stream().reduce("",(acc, name) -> acc + "File:" + name + "|");
+        String reducedNames = imagesNames.stream().reduce("", (acc, name) -> acc + "File:" + name + "|");
         final String titles = reducedNames.substring(0, reducedNames.length() - 1);
 
         return getClient()
                 .get()
                 .uri(builder ->
-                        builder.path(Api.PATH)
-                                .queryParam(Api.ACTION, Api.Query.ACTION)
+                        builder.queryParam(Api.ACTION, Api.Query.ACTION)
                                 .queryParam(Api.Query.TITLES, titles)
                                 .queryParam(Api.Query.PROP, Api.Query.ImageInfo.PROP)
                                 .queryParam(Api.Query.ImageInfo.II_PROP, Api.Query.ImageInfo.IIProp.URL)
@@ -93,7 +92,6 @@ public class WikibooksClient {
         if (client == null) {
             client = WebClient.create(wikibooksApiUrl);
         }
-
         return client;
     }
 }

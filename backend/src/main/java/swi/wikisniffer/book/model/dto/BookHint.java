@@ -2,7 +2,9 @@ package swi.wikisniffer.book.model.dto;
 
 import java.util.List;
 
-public class BookHint {
+import swi.wikisniffer.book.model.Cover;
+
+public class BookHint implements Cover {
 
     private String id;
     private String title;
@@ -38,10 +40,12 @@ public class BookHint {
         return this;
     }
 
+    @Override
     public String getCoverImage() {
         return coverImage;
     }
 
+    @Override
     public BookHint setCoverImage(String coverImage) {
         this.coverImage = coverImage;
         return this;

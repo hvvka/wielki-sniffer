@@ -50,6 +50,16 @@ paths:
         in: "query"
         type: "string"
         description: "Query string (eg. car repair)"
+      - name: "pageNumber"
+        in: "query"
+        type: "integer"
+        default: 0
+        description: "Page number to get for query"
+      - name: "pageSize"
+        in: "query"
+        type: "integer"
+        default: 10
+        description: "Number of elements in page"
       responses:
         "200":
           description: "Succesfully loaded search results"
