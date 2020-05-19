@@ -29,17 +29,30 @@
                 text: ""
             }
         },
-        created: async function () {
-            // const xd = sampleData;
-            const xd = (await this.axios.get('http://localhost:8080/v1/book/' + this.id)).data;
-            this.image = xd.image;
-            this.title = xd.title;
-            this.timestamp = new Date(xd.timestamp).toLocaleString();
-            this.categories = xd.categories || "";
-            // TODO: this.chapters = xd.
-            this.text = xd.text;
+        watch: {
+          id() {
+              this.fetchData()
+          }
         },
-        methods: {}
+        mounted() {
+            this.fetchData()
+        },
+        methods: {
+            fetchData() {
+                // const xd = sampleData;
+                this.axios.get('http://localhost:8080/v1/book/' + this.id)
+                    .then((response) => {
+                        let responseBody = response.data;
+
+                        this.image = responseBody.image;
+                        this.title = responseBody.title;
+                        this.timestamp = new Date(responseBody.timestamp).toLocaleString();
+                        this.categories = responseBody.categories || "";
+                        // TODO: this.chapters = xd.
+                        this.text = responseBody.text;
+                    });
+            }
+        }
     }
 
     // eslint-disable-next-line no-unused-vars

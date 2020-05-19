@@ -6,13 +6,14 @@
           <v-row justify="center" align="end">
             <v-col cols="6">
             <v-combobox flat solo-inverted hide-details prepend-inner-icon="mdi-magnify" label="Search"
-                          class="hidden-sm-and-down " 
+                          class="hidden-sm-and-down "
                           :items="hints"
-                          item-text="title"
+                          :item-text="displayHintFunc"
                           :loading="searching"
                           @input="hintClickedHandler"
                           @update:search-input="requestForHints"
                           :filter="allowAllFilterFunction"
+                          ref="search"
                           >
             </v-combobox>
             </v-col>
@@ -60,13 +61,22 @@
       hints: []
     }),
     methods: {
+      displayHintFunc(item) {
+        return item.title + " (" + item.id + ")";
+      },
       hintClickedHandler(inputValue) {
+        if (inputValue == null) { // fix for executing this method when blur() on empty input
+          return;
+        }
+
         if (typeof inputValue === 'object') { // or alternativly this.hints.includes(inputValue)
           console.log('hint: ' + JSON.stringify(inputValue));
-          this.$router.push(`/page/${inputValue.id}`);
-          this.$router.go();
+          this.$router.push({path: `/page/${inputValue.id}`});
+          this.clearSearchInput();
         } else {
           console.log("custom:" + inputValue);
+          this.doSimpleSearch(inputValue);
+          this.clearSearchInput();
         }
       },
       requestForHints(input) {
@@ -75,9 +85,13 @@
                             // this prevents from entering enter key by user and injecting value from hints array
           return;
         }
-        
+
+        if (input.length <= 3) { //dont hint if not typed less than 4 characters
+          return;
+        }
+
         this.searching = true;
-        this.axios.get('http://localhost:8080/v1/search/hint?query='+input)
+        this.axios.get('http://localhost:8080/v1/search/hint?query='+input+'&hintCount=6')
           .then(response => {
             // console.log(response);
             this.hints = response.data;
@@ -96,6 +110,20 @@
         // (item: object, queryText: string, itemText: string) => boolean
         // because results from backend can contain items that doesnt contain inputed value by user
         // these values are filtered by default and in result they are not displayed
+      },
+      doSimpleSearch(queryString) {
+        this.$store.dispatch('simpleSearch', queryString)
+          .then(() => {
+            this.$router.push({ name: 'Search Engine Result Page'})
+          })
+          .catch(error => {
+            console.error(error);
+            console.error('Something went absolutely wrong. You should consider restarting computer.');
+          })
+      },
+      clearSearchInput() {
+        this.$refs.search.clearableCallback();
+        this.$refs.search.blur();
       }
     }
   }
@@ -109,4 +137,10 @@
     text-shadow: 0.1px 0.1px black;
     -webkit-text-stroke: 0.1px gray;
   }
+
+  .theme--light.v-list-item .v-list-item__mask {
+    background: white !important;
+    color: rgba(0, 0, 0, 0.87) !important;
+  }
+
 </style>

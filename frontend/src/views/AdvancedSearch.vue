@@ -98,7 +98,7 @@
                 this.categorySuggestions = ['Automotive']
             },
             searchButtonClickHandler() {
-                this.$store.dispatch('search', 'Mercedes W202')
+                this.$store.dispatch('simpleSearch', 'Mercedes W202')
                     .then(() => {
                         this.$router.push({ name: 'Search Engine Result Page'})
                     })
