@@ -65,7 +65,7 @@
                 </v-row>
 
                 <v-row justify="end">
-                    <v-btn outlined color="blue">Search</v-btn>
+                    <v-btn outlined color="blue" @click="searchButtonClickHandler">Search</v-btn>
                 </v-row>
             </v-col>
         </v-row>
@@ -94,6 +94,16 @@
             suggestCategories(event) {
                 console.log(event);
                 this.categorySuggestions = ['Automotive']
+            },
+            searchButtonClickHandler() {
+                this.$store.dispatch('search', 'Mercedes W202')
+                    .then(() => {
+                        this.$router.push({ name: 'Search Engine Result Page'})
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        console.error('Something went absolutely wrong. You should consider restarting computer.');
+                    })
             }
         }
     }

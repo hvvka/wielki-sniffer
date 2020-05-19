@@ -16,3 +16,5 @@ Vue.component('AutoComplete', AutoComplete);
 import Dropdown from 'primevue/dropdown';
 Vue.component('Dropdown', Dropdown);
 
+import Card from 'primevue/card';
+Vue.component('Card', Card);
