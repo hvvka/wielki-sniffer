@@ -55,3 +55,4 @@ hs_err_pid*
 /frontend/*.sw?
 
 /datasource
+.DS_Store

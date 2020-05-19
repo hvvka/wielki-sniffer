@@ -36,7 +36,7 @@
     </v-content>
 
     <v-footer>
-      <router-link to="/page/:id">
+      <router-link to="/page/7">
         <span style="color: black; font-size: 9px;">Sample page</span>
       </router-link>
        |
@@ -62,7 +62,9 @@
     methods: {
       hintClickedHandler(inputValue) {
         if (typeof inputValue === 'object') { // or alternativly this.hints.includes(inputValue)
-          console.log('hint: ' + JSON.stringify(inputValue))
+          console.log('hint: ' + JSON.stringify(inputValue));
+          this.$router.push(`/page/${inputValue.id}`);
+          this.$router.go();
         } else {
           console.log("custom:" + inputValue);
         }

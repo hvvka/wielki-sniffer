@@ -9,6 +9,11 @@
       "name": "elasticsearch.api.url",
       "type": "java.lang.String",
       "description": "Elasticsearch instance API URL."
+    },
+    {
+      "name": "allowedOrigins",
+      "type": "java.lang.String",
+      "description": "Origins allowed to get content."
     }
   ]
 }

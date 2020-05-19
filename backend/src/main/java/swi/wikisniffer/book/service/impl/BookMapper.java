@@ -1,17 +1,18 @@
-package swi.wikisniffer.book.service;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+package swi.wikisniffer.book.service.impl;
 
 import org.springframework.stereotype.Service;
 import swi.wikisniffer.book.model.dto.BookHint;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.service.wikibooks.WikibooksClient;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @Service
 public class BookMapper {
+
     private final WikibooksClient wikibooksClient;
 
     public BookMapper(WikibooksClient wikibooksClient) {

@@ -1,11 +1,11 @@
 package swi.wikisniffer.book.model.searchengine;
 
-import java.util.List;
-
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+
+import java.util.List;
 
 @Document(indexName = "enwikibooks", type = "_doc")
 public class Book {
@@ -16,7 +16,7 @@ public class Book {
     private String title;
 
     @Field(name = "first_image", type = FieldType.Text)
-    private String firstImage;
+    private String firstImage = "";
 
     @Field(name = "text", type = FieldType.Text)
     private String text;
@@ -73,5 +73,17 @@ public class Book {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", firstImage='" + firstImage + '\'' +
+                ", text='" + text + '\'' +
+                ", categories=" + categories +
+                ", timestamp='" + timestamp + '\'' +
+                '}';
     }
 }

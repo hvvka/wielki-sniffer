@@ -1,7 +1,4 @@
-package swi.wikisniffer.book.service;
-
-import java.util.ArrayList;
-import java.util.List;
+package swi.wikisniffer.book.service.impl;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,8 +9,12 @@ import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.repository.BookRepository;
 import swi.wikisniffer.query.service.QuerySplitter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class Searcher {
+
     private final QuerySplitter querySplitter;
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;

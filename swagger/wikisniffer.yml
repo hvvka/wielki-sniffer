@@ -67,6 +67,16 @@ paths:
       produces:
       - "application/json"
       parameters:
+      - in: "query"
+        name: "pageNumber"
+        type: "integer"
+        default: 0
+        description: "Page number to get for query"
+      - in: "query"
+        name: "pageSize"
+        type: "integer"
+        default: 10
+        description: "Number of elements in page"
       - in: "body"
         name: "body"
         description: "Advanced search query"
@@ -247,7 +257,7 @@ definitions:
       field: 
         type: "string"
         enum:
-        - "CATEGORY"
+        - "CATEGORIES"
         - "CONTRIBUTOR"
       value:
         type: "string"
@@ -261,7 +271,7 @@ definitions:
         - "TITLE"
         - "TEXT"
         - "CONTRIBUTOR"
-        - "CATEGORY"
+        - "CATEGORIES"
       should:
         type: "array"
         items:

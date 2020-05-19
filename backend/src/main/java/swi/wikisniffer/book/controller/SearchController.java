@@ -1,30 +1,33 @@
 package swi.wikisniffer.book.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import swi.wikisniffer.book.model.dto.BookHint;
+import swi.wikisniffer.book.service.BookService;
+
 import java.util.List;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import swi.wikisniffer.book.model.dto.BookHint;
-import swi.wikisniffer.book.service.Searcher;
-
 @RestController
+@CrossOrigin(origins = "${allowedOrigins}")
 @RequestMapping("/v1/search")
 public class SearchController {
 
-    private final Searcher searcher;
+    private static final Logger LOG = LoggerFactory.getLogger(SearchController.class);
 
-    public SearchController(Searcher searcher) {
-        this.searcher = searcher;
+    private final BookService bookService;
+
+    public SearchController(BookService bookService) {
+        this.bookService = bookService;
     }
 
     @GetMapping(value = "/hint", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<BookHint> getHints(
-            @RequestParam(defaultValue = "") String query,
-            @RequestParam(defaultValue = "3") int hintCount
+            @RequestParam(defaultValue = "${request.defaultQuery}") String query,
+            @RequestParam(defaultValue = "${request.defaultHintCount}") int hintCount
     ) {
-        return searcher.getHints(query, hintCount);
+        LOG.info("GET {} hints for query '{}'", hintCount, query);
+        return bookService.getBookHints(query, hintCount);
     }
 }
