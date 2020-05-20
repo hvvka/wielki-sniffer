@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import swi.wikisniffer.book.model.dto.AdvancedQuery;
 import swi.wikisniffer.book.model.dto.BookHint;
+import swi.wikisniffer.book.model.dto.BookResult;
 import swi.wikisniffer.book.model.dto.ResultPage;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.repository.BookRepository;
@@ -37,9 +38,25 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Optional<Book> getOne(String id) {
+    public Optional<Book> getFullBook(String id) {
         Optional<Book> book = bookRepository.findById(id);
-        return book.flatMap(this::parseBookContent);
+        return book.flatMap(this::parseFullBookContent);
+    }
+
+    @Override
+    public Optional<BookResult> getBookResult(String id) {
+        Optional<Book> book = bookRepository.findById(id);
+        return book.flatMap(this::parseBookResultsChapters);
+    }
+
+    private Optional<BookResult> parseBookResultsChapters(Book book) {
+        Optional<String> sections = wikibooksService.getPageSections(book.getId());
+        BookResult bookResult = new BookResult(book);
+        sections.ifPresent(s -> {
+            // TODO: map sections to chapters
+            // bookResult.setContents()
+        });
+        return Optional.of(bookResult);
     }
 
     @Override
@@ -48,7 +65,7 @@ public class BookServiceImpl implements BookService {
             return new ArrayList<>(0);
         }
 
-        return  bookMapper.mapToHints(searcher.getHints(query, hintCount).getContent());
+        return bookMapper.mapToHints(searcher.getHints(query, hintCount).getContent());
     }
 
     @Override
@@ -65,7 +82,7 @@ public class BookServiceImpl implements BookService {
         return resultPageMapper.mapToResultPage(searcher.getBooks(query, pageNumber, pageSize));
     }
 
-    private Optional<Book> parseBookContent(Book book) {
+    private Optional<Book> parseFullBookContent(Book book) {
         Optional<String> text = wikibooksService.getPageText(book.getId());
         text.ifPresent(book::setText);
         return Optional.of(book);

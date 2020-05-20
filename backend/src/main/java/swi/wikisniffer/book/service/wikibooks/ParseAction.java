@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 @Component
 class ParseAction {
@@ -21,26 +22,29 @@ class ParseAction {
     @Value("${wikibooks.api.url}")
     private String wikibooksApiUrl;
 
-    private final Function<String, String> apiParseResponse = (pageId) ->
-            WebClient.create(wikibooksApiUrl)
-                    .mutate()
-                    .exchangeStrategies(ExchangeStrategies.builder()
-                            .codecs(configurer -> configurer
-                                    .defaultCodecs()
-                                    .maxInMemorySize(16 * 1024 * 1024))
-                            .build())
-                    .build()
-                    .get()
-                    .uri(builder ->
-                            builder.queryParam("action", "parse")
-                                    .queryParam("format", "json")
-                                    .queryParam("pageid", pageId)
-                                    .queryParam("prop", "sections|text")
-                                    .build())
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
+    private final UnaryOperator<String> apiParseResponse = getApiParseResponse();
 
+    public UnaryOperator<String> getApiParseResponse() {
+        return pageId ->
+                WebClient.create(wikibooksApiUrl)
+                        .mutate()
+                        .exchangeStrategies(ExchangeStrategies.builder()
+                                .codecs(configurer -> configurer
+                                        .defaultCodecs()
+                                        .maxInMemorySize(16 * 1024 * 1024))
+                                .build())
+                        .build()
+                        .get()
+                        .uri(builder ->
+                                builder.queryParam("action", "parse")
+                                        .queryParam("format", "json")
+                                        .queryParam("pageid", pageId)
+                                        .queryParam("prop", "sections|text")
+                                        .build())
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+    }
 
     public Optional<String> getTextNode(String pageId) {
         String response = apiParseResponse.apply(pageId);
@@ -60,9 +64,7 @@ class ParseAction {
         return Optional.empty();
     }
 
-    private Optional<String> getSelectedNode(String pageId,
-                                             String response,
-                                             Function<JsonNode, String> getNode) {
+    private Optional<String> getSelectedNode(String pageId, String response, Function<JsonNode, String> getNode) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode parseResponse = mapper.readTree(response);

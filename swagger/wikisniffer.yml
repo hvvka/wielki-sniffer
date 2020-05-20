@@ -14,12 +14,12 @@ schemes:
 - "https"
 - "http"
 paths:
-  /book/{id}:
+  /book/{id}/result:
     get:
       tags:
-      - "book"
-      summary: "Get book by identifier"
-      operationId: "getBook"
+      - "book result"
+      summary: "Get book without text by identifier"
+      operationId: "getBookResult"
       produces:
       - "application/json"
       parameters:
@@ -28,6 +28,29 @@ paths:
         description: "Book unique identifier"
         required: true
         type: "integer"
+      responses:
+        "200":
+          description: "Successfully loaded book"
+          schema:
+            $ref: "#/definitions/BookResult"
+        "404":
+          description: "Book not found"
+        "500":
+          description: "Unexpected server error"
+  /book/{id}:
+    get:
+      tags:
+        - "full book"
+      summary: "Get full book by identifier"
+      operationId: "getFullBook"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Book unique identifier"
+          required: true
+          type: "integer"
       responses:
         "200":
           description: "Successfully loaded book"

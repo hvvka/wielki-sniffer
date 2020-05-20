@@ -3,6 +3,7 @@ package swi.wikisniffer.book.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import swi.wikisniffer.book.model.dto.BookResult;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.service.BookService;
 
@@ -22,8 +23,14 @@ public class BookController {
     }
 
     @GetMapping(value = "/book/{id}")
-    public Optional<Book> getBook(@PathVariable("id") String id) {
-        LOG.info("GET book id={}", id);
-        return bookService.getOne(id);
+    public Optional<Book> getFullBook(@PathVariable("id") String id) {
+        LOG.info("GET full book id={}", id);
+        return bookService.getFullBook(id);
+    }
+
+    @GetMapping(value = "/book/{id}/result")
+    public Optional<BookResult> getBookResult(@PathVariable("id") String id) {
+        LOG.info("GET book result id={}", id);
+        return bookService.getBookResult(id);
     }
 }
