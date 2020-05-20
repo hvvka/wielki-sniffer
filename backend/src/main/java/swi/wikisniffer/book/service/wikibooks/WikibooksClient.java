@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import swi.wikisniffer.book.service.WikibooksService;
 
@@ -34,32 +35,26 @@ public class WikibooksClient implements WikibooksService {
 
     @Override
     public Optional<String> getPageContent(String title) {
-        String response = WebClient.create(wikibooksApiUrl)
-                .get()
-                .uri(builder ->
-                        builder.queryParam("action", "parse")
-                                .queryParam("format", "json")
-                                .queryParam("page", title)
-                                // TODO: link chapters to query the api for pageid (action=search) and redirect
-                                .build())
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-
+        String response = new ParseAction(title).invoke();
         if (response != null) {
-            ObjectMapper mapper = new ObjectMapper();
             try {
-                JsonNode parseResponse = mapper.readTree(response);
-                if (parseResponse.get("error") == null) {
-                    return Optional.of(parseResponse.get("parse").get("text").get("*").textValue());
-                } else {
-                    LOG.error("Wikibooks API could not find title {}: {}", title, response);
-                }
+                return getParsedPageText(title, response);
             } catch (JsonProcessingException e) {
                 LOG.error("", e);
             }
         }
         return Optional.empty();
+    }
+
+    private Optional<String> getParsedPageText(String title, String response) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode parseResponse = mapper.readTree(response);
+        if (parseResponse.get("error") != null) {
+            LOG.error("Wikibooks API could not find title {}: {}", title, response);
+            return Optional.empty();
+        }
+        String text = parseResponse.get("parse").get("text").get("*").textValue();
+        return Optional.of(text);
     }
 
     private Map<String, String> extractImagesUrls(String apiResponse) {
@@ -133,5 +128,33 @@ public class WikibooksClient implements WikibooksService {
             client = WebClient.create(wikibooksApiUrl);
         }
         return client;
+    }
+
+    private class ParseAction {
+        private final String title;
+
+        public ParseAction(String title) {
+            this.title = title;
+        }
+
+        public String invoke() {
+            return WebClient.create(wikibooksApiUrl)
+                    .mutate()
+                    .exchangeStrategies(ExchangeStrategies.builder()
+                            .codecs(configurer -> configurer
+                                    .defaultCodecs()
+                                    .maxInMemorySize(16 * 1024 * 1024))
+                            .build())
+                    .build()
+                    .get()
+                    .uri(builder ->
+                            builder.queryParam("action", "parse")
+                                    .queryParam("format", "json")
+                                    .queryParam("page", title)
+                                    .build())
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        }
     }
 }
