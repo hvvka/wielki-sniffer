@@ -1,7 +1,7 @@
 <template>
     <v-container fluid>
         <div class="card">
-            <img alt="" class="card-img-top" src="https://picsum.photos/1920/300?random">
+            <img v-if="image" :alt="image" :src="image" class="card-img-top cover-image" >
             <div class="card-body">
                 <h1 class="card-title">{{title}}</h1>
                 <div class="card-subtitle mb-2 text-muted">Last edited: {{timestamp}}</div>
@@ -21,12 +21,12 @@
         name: "ResultPreviewPage",
         data() {
             return {
-                image: "",
-                title: "",
+                image: null,
+                title: null,
                 timestamp: new Date().toLocaleString(),
                 categories: [],
                 chapters: [],
-                text: ""
+                text: null
             }
         },
         watch: {
@@ -44,7 +44,9 @@
                     .then((response) => {
                         let responseBody = response.data;
 
-                        this.image = responseBody.image;
+                        this.image = responseBody.image || this.$store.coverImage;
+                        console.log(this.$store.coverImage);
+                        console.log(responseBody.image);
                         this.title = responseBody.title;
                         this.timestamp = new Date(responseBody.timestamp).toLocaleString();
                         this.categories = responseBody.categories || "";
@@ -68,5 +70,8 @@
 </script>
 
 <style scoped>
-
+.cover-image {
+    object-fit: cover;
+    height: 150px;
+}
 </style>

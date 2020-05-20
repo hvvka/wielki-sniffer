@@ -75,6 +75,7 @@
 
         if (typeof inputValue === 'object') { // or alternativly this.hints.includes(inputValue)
           console.log('hint: ' + JSON.stringify(inputValue));
+          this.$store.coverImage = inputValue.coverImage;
           this.$router.push({path: `/page/${inputValue.id}`});
           this.clearSearchInput();
         } else {
@@ -109,7 +110,7 @@
       },
       allowAllFilterFunction() {
         // console.log("item: " + JSON.stringify(item) + ", queryText: " + queryText + ", itemText: " + itemText)
-        return true
+        return true;
         // The function used for filtering items
         // (item: object, queryText: string, itemText: string) => boolean
         // because results from backend can contain items that doesnt contain inputed value by user

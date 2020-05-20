@@ -12,4 +12,5 @@ export default {
     searchResults: null,                // actual displaying data
     searchPageNumber: 0,                // last fetched page
     searchPageSize: 10,                 // how many pages per result. should be changed programmatically
+    coverImage: null,
 }

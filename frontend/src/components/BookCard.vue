@@ -16,7 +16,7 @@
 <!--        Foo Img-->
 <!--    </div>-->
 
-    <Card class="link" @click.native="navigateUser(book.id)">
+    <Card class="link" @click.native="navigateUser(book.id, book.coverImage)">
         <template slot="title">
             <span>{{book.title}}</span>
         </template>
@@ -48,7 +48,8 @@
         name: "BookCard",
         props: ['book'],
         methods: {
-            navigateUser(bookId) {
+            navigateUser(bookId, coverImage) {
+                this.$store.coverImage = coverImage;
                 this.$router.push({path: `/page/${bookId}`});
                 // scroll user top, because user will have scrollbar from previous screen
                 window.scrollTo({
