@@ -8,5 +8,8 @@ public interface WikibooksService {
 
     Map<String, String> getImagesUrls(List<String> imagesNames);
 
-    Optional<String> getPageContent(String pageId);
+    Optional<String> getPageText(String pageId);
+
+    Optional<String> getPageSections(String pageId);
+
 }

@@ -66,7 +66,7 @@ public class BookServiceImpl implements BookService {
     }
 
     private Optional<Book> parseBookContent(Book book) {
-        Optional<String> text = wikibooksService.getPageContent(book.getId());
+        Optional<String> text = wikibooksService.getPageText(book.getId());
         text.ifPresent(book::setText);
         return Optional.of(book);
     }

@@ -1,15 +1,9 @@
 package swi.wikisniffer.book.service.wikibooks;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import swi.wikisniffer.book.service.WikibooksService;
 
@@ -21,12 +15,16 @@ import java.util.Optional;
 @Service
 public class WikibooksClient implements WikibooksService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WikibooksClient.class);
-
     @Value("${wikibooks.api.url}")
     private String wikibooksApiUrl;
 
+    private final ParseAction parseAction;
+
     private WebClient client;
+
+    public WikibooksClient(ParseAction parseAction) {
+        this.parseAction = parseAction;
+    }
 
     @Override
     public Map<String, String> getImagesUrls(List<String> imagesNames) {
@@ -34,28 +32,13 @@ public class WikibooksClient implements WikibooksService {
     }
 
     @Override
-    public Optional<String> getPageContent(String pageId) {
-        String response = new ParseAction(pageId).invoke();
-        if (response != null) {
-            try {
-                return getParsedPageText(pageId, response);
-            } catch (JsonProcessingException e) {
-                LOG.error("", e);
-            }
-        }
-        return Optional.empty();
+    public Optional<String> getPageText(String pageId) {
+        return parseAction.getTextNode(pageId);
     }
 
-    private Optional<String> getParsedPageText(String title, String response) throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode parseResponse = mapper.readTree(response);
-        if (parseResponse.get("error") != null) {
-            LOG.error("Wikibooks API could not find title {}: {}", title, response);
-            return Optional.empty();
-        }
-        String text = parseResponse.get("parse").get("text").get("*").textValue(); // todo: pass as lambda
-        // todo: sections property might return table of contents
-        return Optional.of(text);
+    @Override
+    public Optional<String> getPageSections(String pageId) {
+        return parseAction.getSectionsNode(pageId);
     }
 
     private Map<String, String> extractImagesUrls(String apiResponse) {
@@ -131,31 +114,4 @@ public class WikibooksClient implements WikibooksService {
         return client;
     }
 
-    private class ParseAction {
-        private final String pageId;
-
-        public ParseAction(String pageId) {
-            this.pageId = pageId;
-        }
-
-        public String invoke() {
-            return WebClient.create(wikibooksApiUrl)
-                    .mutate()
-                    .exchangeStrategies(ExchangeStrategies.builder()
-                            .codecs(configurer -> configurer
-                                    .defaultCodecs()
-                                    .maxInMemorySize(16 * 1024 * 1024))
-                            .build())
-                    .build()
-                    .get()
-                    .uri(builder ->
-                            builder.queryParam("action", "parse")
-                                    .queryParam("format", "json")
-                                    .queryParam("pageid", pageId)
-                                    .build())
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .block();
-        }
-    }
 }
