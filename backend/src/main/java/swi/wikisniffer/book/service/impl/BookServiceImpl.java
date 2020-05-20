@@ -3,15 +3,13 @@ package swi.wikisniffer.book.service.impl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import swi.wikisniffer.book.model.dto.AdvancedQuery;
-import swi.wikisniffer.book.model.dto.BookHint;
-import swi.wikisniffer.book.model.dto.BookResult;
-import swi.wikisniffer.book.model.dto.ResultPage;
+import swi.wikisniffer.book.model.dto.*;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.repository.BookRepository;
 import swi.wikisniffer.book.service.BookService;
-import swi.wikisniffer.book.service.ResultPageMapper;
 import swi.wikisniffer.book.service.WikibooksService;
+import swi.wikisniffer.book.service.mapper.BookMapper;
+import swi.wikisniffer.book.service.mapper.ResultPageMapper;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -50,12 +48,9 @@ public class BookServiceImpl implements BookService {
     }
 
     private Optional<BookResult> parseBookResultsChapters(Book book) {
-        Optional<String> sections = wikibooksService.getPageSections(book.getId());
+        List<Chapter> chapters = wikibooksService.getPageChapters(book.getId());
         BookResult bookResult = BookMapper.mapToResult(book);
-        sections.ifPresent(s -> {
-            // TODO: map sections to chapters
-            // bookResult.setContents()
-        });
+        bookResult.setContents(chapters);
         return Optional.of(bookResult);
     }
 

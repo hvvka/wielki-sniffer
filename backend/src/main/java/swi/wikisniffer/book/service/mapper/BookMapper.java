@@ -1,4 +1,4 @@
-package swi.wikisniffer.book.service.impl;
+package swi.wikisniffer.book.service.mapper;
 
 import org.springframework.stereotype.Service;
 import swi.wikisniffer.book.model.Cover;

@@ -11,7 +11,6 @@ import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
 @Component
@@ -46,30 +45,31 @@ class ParseAction {
                         .block();
     }
 
-    public Optional<String> getTextNode(String pageId) {
+    public Optional<JsonNode> getTextNode(String pageId) {
         String response = apiParseResponse.apply(pageId);
         if (response != null) {
-            Function<JsonNode, String> getTextNode = ps -> ps.get("parse").get("text").get("*").textValue();
+            UnaryOperator<JsonNode> getTextNode = ps -> ps.get("parse").get("text").get("*");
             return getSelectedNode(pageId, response, getTextNode);
         }
         return Optional.empty();
     }
 
-    public Optional<String> getSectionsNode(String pageId) {
+    public Optional<JsonNode> getSectionsNode(String pageId) {
         String response = apiParseResponse.apply(pageId);
         if (response != null) {
-            Function<JsonNode, String> getTextNode = ps -> ps.get("parse").get("sections").textValue();
-            return getSelectedNode(pageId, response, getTextNode);
+            UnaryOperator<JsonNode> getSectionsNode = ps -> ps.get("parse").get("sections");
+            return getSelectedNode(pageId, response, getSectionsNode);
         }
         return Optional.empty();
     }
 
-    private Optional<String> getSelectedNode(String pageId, String response, Function<JsonNode, String> getNode) {
+    private Optional<JsonNode> getSelectedNode(String pageId, String response, UnaryOperator<JsonNode> getNode) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode parseResponse = mapper.readTree(response);
+            LOG.debug("Wikibooks API 'parse' response: {}", parseResponse);
             if (parseResponse.get("error") == null) {
-                String selectedNode = getNode.apply(parseResponse);
+                JsonNode selectedNode = getNode.apply(parseResponse);
                 return Optional.of(selectedNode);
             }
         } catch (JsonProcessingException e) {

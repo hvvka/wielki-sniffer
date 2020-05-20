@@ -1,16 +1,18 @@
 package swi.wikisniffer.book.service.wikibooks;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import swi.wikisniffer.book.model.dto.Chapter;
 import swi.wikisniffer.book.service.WikibooksService;
+import swi.wikisniffer.book.service.mapper.ChapterMapper;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class WikibooksClient implements WikibooksService {
@@ -33,12 +35,18 @@ public class WikibooksClient implements WikibooksService {
 
     @Override
     public Optional<String> getPageText(String pageId) {
-        return parseAction.getTextNode(pageId);
+        Optional<JsonNode> textNode = parseAction.getTextNode(pageId);
+        return textNode.map(JsonNode::textValue);
     }
 
     @Override
-    public Optional<String> getPageSections(String pageId) {
-        return parseAction.getSectionsNode(pageId);
+    public List<Chapter> getPageChapters(String pageId) {
+        Optional<JsonNode> sectionsNode = parseAction.getSectionsNode(pageId);
+        return sectionsNode.map(jsonNode -> ChapterMapper.mapToResult(
+                StreamSupport.stream(jsonNode.spliterator(), false)
+                        .collect(Collectors.toList())
+                )
+        ).orElse(Collections.emptyList());
     }
 
     private Map<String, String> extractImagesUrls(String apiResponse) {
