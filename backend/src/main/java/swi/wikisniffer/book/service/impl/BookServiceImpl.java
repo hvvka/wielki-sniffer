@@ -51,7 +51,7 @@ public class BookServiceImpl implements BookService {
 
     private Optional<BookResult> parseBookResultsChapters(Book book) {
         Optional<String> sections = wikibooksService.getPageSections(book.getId());
-        BookResult bookResult = new BookResult(book);
+        BookResult bookResult = BookMapper.mapToResult(book);
         sections.ifPresent(s -> {
             // TODO: map sections to chapters
             // bookResult.setContents()

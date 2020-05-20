@@ -31,26 +31,24 @@ public class BookMapper {
         return hints;
     }
 
-    public List<BookResult> mapToResult(List<Book> books) {
-        List<BookResult> results = books.stream()
-                .map(this::mapToResult)
-                .collect(Collectors.toList());
-        fillImageUrls(results);
-
-        return results;
-    }
-
-    private BookResult mapToResult(Book book) {
-        BookResult result = new BookResult(book);
-        result.setCategories(book.getCategories())
-                .setContents(new ArrayList<>()) // TODO generate contents
+    public static BookResult mapToResult(Book book) {
+        BookResult result = new BookResult();
+        return result.setCategories(book.getCategories())
+                .setContents(new ArrayList<>())
                 .setContributor(book.getContributor())
                 .setCoverImage(book.getFirstImage())
                 .setId(Integer.parseInt(book.getId()))
                 .setTimestamp(book.getTimestamp())
                 .setTitle(book.getTitle());
+    }
 
-        return result;
+    public List<BookResult> mapToResult(List<Book> books) {
+        List<BookResult> results = books.stream()
+                .map(BookMapper::mapToResult)
+                .collect(Collectors.toList());
+        fillImageUrls(results);
+
+        return results;
     }
 
     private BookHint mapToHint(Book book) {

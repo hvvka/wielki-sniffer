@@ -1,9 +1,7 @@
 package swi.wikisniffer.book.model.dto;
 
 import swi.wikisniffer.book.model.Cover;
-import swi.wikisniffer.book.model.searchengine.Book;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BookResult implements Cover {
@@ -15,16 +13,6 @@ public class BookResult implements Cover {
     private String timestamp;
     private String coverImage;
     private List<Chapter> contents;
-
-    public BookResult(Book book) {
-        this.id = Integer.parseInt(book.getId());
-        this.title = book.getTitle();
-        this.categories = book.getCategories();
-        this.contributor = book.getContributor();
-        this.timestamp = book.getTimestamp();
-        this.coverImage = book.getFirstImage();
-        this.contents = new ArrayList<>();
-    }
 
     public int getId() {
         return id;
