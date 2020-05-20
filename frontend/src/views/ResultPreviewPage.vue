@@ -5,7 +5,7 @@
             <div class="card-body">
                 <h1 class="card-title">{{title}}</h1>
                 <div class="card-subtitle mb-2 text-muted">Last edited: {{timestamp}}</div>
-                <div class="card-header" v-if="categories">{{categories.join(' > ')}}</div>
+                <div class="card-header" v-if="categories.length">{{categories.join(' > ')}}</div>
                 <div class="card-body">
                     <p class="card-text" v-html="text"/>
                 </div>
