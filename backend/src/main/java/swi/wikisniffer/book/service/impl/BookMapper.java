@@ -1,17 +1,17 @@
 package swi.wikisniffer.book.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import swi.wikisniffer.book.model.Cover;
 import swi.wikisniffer.book.model.dto.BookHint;
 import swi.wikisniffer.book.model.dto.BookResult;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.service.wikibooks.WikibooksClient;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class BookMapper {
@@ -41,7 +41,7 @@ public class BookMapper {
     }
 
     private BookResult mapToResult(Book book) {
-        BookResult result = new BookResult();
+        BookResult result = new BookResult(book);
         result.setCategories(book.getCategories())
                 .setContents(new ArrayList<>()) // TODO generate contents
                 .setContributor(book.getContributor())
