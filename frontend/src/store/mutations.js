@@ -9,6 +9,9 @@ export default {
         state.searchData = data;
         state.lastPerformedSearchWasSimple = false;
     },
+    [MUTATION_TYPES.SET_SEARCH_BODY](state, data) {
+        state.searchBody = data;
+    },
     [MUTATION_TYPES.SET_SEARCH_RESULTS](state, data) {
         state.searchResults = data
     },

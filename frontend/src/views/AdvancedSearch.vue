@@ -1,8 +1,6 @@
 <template>
-    <v-container fluid>
+    <v-container fluid style="height: 700px;">
         <v-row align="center" justify="center">
-            {{requestBody}}<br />
-            {{title}}
             <v-col cols="6">
                 <v-row>
                     <v-col>
@@ -35,10 +33,14 @@
                     <v-col>
                         <v-row justify="center" class="p-fluid">
                             <v-col cols="6">
-                                <Calendar :show-icon="true" :showButtonBar="true" v-model="fromDate"/>
+                                <Calendar :show-icon="true" :showButtonBar="true" v-model="fromDate"
+                                          :monthNavigator="true" :yearNavigator="true" yearRange="1800:2020"
+                                          :locale="pl"/>
                             </v-col>
                             <v-col cols="6">
-                                <Calendar :show-icon="true" :showButtonBar="true" v-model="toDate"/>
+                                <Calendar :show-icon="true" :showButtonBar="true" v-model="toDate"
+                                          :monthNavigator="true" :yearNavigator="true" yearRange="1800:2020"
+                                          :locale="pl"/>
                             </v-col>
                         </v-row>
                     </v-col>
@@ -49,9 +51,10 @@
                         <span>Category</span>
                     </v-col>
                     <v-col cols="10" class="p-fluid">
-                        <AutoComplete :multiple="true" v-model="categories"
-                                      :suggestions="categorySuggestions"
-                                      @complete="suggestCategories($event) "/>
+<!--                        <AutoComplete :multiple="true" v-model="categories"-->
+<!--                                      :suggestions="categorySuggestions"-->
+<!--                                      @complete="suggestCategories($event)"/>-->
+                        <Chips v-model="categories" />
                     </v-col>
                 </v-row>
 
@@ -60,9 +63,10 @@
                         <span>Contributor</span>
                     </v-col>
                     <v-col cols="10" class="p-fluid">
-                        <AutoComplete :multiple="true" v-model="contributors"
-                                      :suggestions="contributorSuggestions"
-                                      @complete="suggestContributors($event)"/>
+<!--                        <AutoComplete :multiple="true" v-model="contributors"-->
+<!--                                      :suggestions="contributorSuggestions"-->
+<!--                                      @complete="suggestContributors($event)"/>-->
+                        <Chips v-model="contributors" />
                     </v-col>
                 </v-row>
 
@@ -88,37 +92,18 @@
                 contributorSuggestions: [],
                 categories: [],
                 categorySuggestions: [],
-                requestBody: {
-                    timestampRange: {
-                        from: "2020-05-19T22:05:18.093Z",
-                        to: "2020-05-19T22:05:18.093Z"
-                    },
-                    sortField: {
-                        field: "RELEVANCE",
-                        direction: "ASC"
-                    },
-                    filterFields: [
-                        {
-                            field: "CATEGORIES",
-                            value: "Automobile Repair"
-                        }
-                    ],
-                    searchFields: [
-                        {
-                            field: "TITLE",
-                            should: [
-                                {
-                                    must: [
-                                        "car",
-                                        "repair",
-                                        "mercedes w202"
-                                    ],
-                                    not: false
-                                }
-                            ]
-                        }
-                    ]
-                }
+                pl: {
+                    firstDayOfWeek: 1,
+                    dayNames: ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"],
+                    dayNamesShort: ["Nie", "Pon", "Wto", "Śro", "Czw", "Pią", "Sob"],
+                    dayNamesMin: ["Nd", "Pn", "Wt", "Śr", "Cz", "Pt", "Sb"],
+                    monthNames: ["Styczeń", "Luteń", "Marzeń", "Kwiecień", "Majeń", "Czerwień", "Lipień", "Sierpień", "Wrzesień", "Październień", "Listopadzień", "Grudzień"],
+                    monthNamesShort: ["Sty", "Lut", "Mar", "Kwi", "Maj", "Cze", "Lip", "Sie", "Wrz", "Paź", "Lis", "Gru"],
+                    today: 'Dzisiaj',
+                    clear: 'Wyczyść',
+                    dateFormat: 'mm/dd/yy',
+                    weekHeader: 'Wk'
+                },
             }
         },
         methods: {
@@ -131,7 +116,25 @@
                 this.categorySuggestions = ['Automotive']
             },
             searchButtonClickHandler() {
-                this.requestBody = this.buildRequestBody();
+                this.$store.dispatch('advancedSearch', {
+                    title: this.title,
+                    notTitle: this.notTitle,
+                    text: this.text,
+                    notText: this.notText,
+                    fromDate: this.fromDate,
+                    toDate: this.toDate,
+                    contributors: this.contributors,
+                    categories: this.categories,
+                    sortField: {
+                        field: "RELEVANCE",
+                        direction: "ASC"
+                    }
+                }).then(() => {
+                    this.$router.push({name: 'Search Engine Result Page'})
+                }).catch(error => {
+                    console.error(error);
+                    console.error('Something went absolutely wrong. You should consider restarting computer.');
+                })
                 // this.$store.dispatch('simpleSearch', 'Mercedes W202')
                 //     .then(() => {
                 //         this.$router.push({ name: 'Search Engine Result Page'})
@@ -141,49 +144,6 @@
                 //         console.error('Something went absolutely wrong. You should consider restarting computer.');
                 //     })
             },
-            buildRequestBody() {
-                let requestBody = {
-                    timestampRange: {
-                        from: this.fromDate,
-                        to: this.toDate
-                    },
-                    sortField: {
-                        field: "RELEVANCE",
-                        direction: "ASC"
-                    },
-                    filterFields: [],
-                    searchFields: []
-                };
-                if (this.title !== []) {
-
-                    var mustTitle = [];
-                    var tmp = '';
-
-                    this.title.forEach(el => {
-                        console.log(1);
-                        var splitted = el.split(' ');
-                        splitted.forEach(el => {
-                            if (el.startsWith('"')) tmp = el;
-                            else if (tmp !== '') { mustTitle.push(tmp + " " + el); tmp = ''; }
-                            else mustTitle.push(el);
-                        });
-                        requestBody.searchFields.push({
-                            field: "TITLE",
-                            should: [
-                                {
-                                    must: mustTitle,
-                                    not: this.notTitle.includes(el)
-                                }
-                            ]
-                        });
-                        mustTitle = [];
-                        tmp = '';
-                    });
-                }
-
-
-                return requestBody;
-            }
         }
     }
 </script>

@@ -26,7 +26,7 @@
             <v-col cols="7">
                 <v-row dense>
                     <v-col>
-                        <h3 class="header-panel ma-0">Results (37)</h3>
+                        <h3 class="header-panel ma-0">Results ({{getSearchResults.books.length}} / {{getSearchResults.resultCount}})</h3>
                     </v-col>
                     <v-spacer></v-spacer>
                     <v-col class="text-right">
@@ -70,7 +70,7 @@
             BookCard
         },
         computed: {
-            ...mapGetters(['getSearchResults', 'getSearchData']),
+            ...mapGetters(['getSearchResults']),
         },
         data() {
             return {
