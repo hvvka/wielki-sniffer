@@ -34,11 +34,11 @@ public class WikibooksClient implements WikibooksService {
     }
 
     @Override
-    public Optional<String> getPageContent(String title) {
-        String response = new ParseAction(title).invoke();
+    public Optional<String> getPageContent(String pageId) {
+        String response = new ParseAction(pageId).invoke();
         if (response != null) {
             try {
-                return getParsedPageText(title, response);
+                return getParsedPageText(pageId, response);
             } catch (JsonProcessingException e) {
                 LOG.error("", e);
             }
@@ -53,7 +53,8 @@ public class WikibooksClient implements WikibooksService {
             LOG.error("Wikibooks API could not find title {}: {}", title, response);
             return Optional.empty();
         }
-        String text = parseResponse.get("parse").get("text").get("*").textValue();
+        String text = parseResponse.get("parse").get("text").get("*").textValue(); // todo: pass as lambda
+        // todo: sections property might return table of contents
         return Optional.of(text);
     }
 
@@ -131,10 +132,10 @@ public class WikibooksClient implements WikibooksService {
     }
 
     private class ParseAction {
-        private final String title;
+        private final String pageId;
 
-        public ParseAction(String title) {
-            this.title = title;
+        public ParseAction(String pageId) {
+            this.pageId = pageId;
         }
 
         public String invoke() {
@@ -150,7 +151,7 @@ public class WikibooksClient implements WikibooksService {
                     .uri(builder ->
                             builder.queryParam("action", "parse")
                                     .queryParam("format", "json")
-                                    .queryParam("page", title)
+                                    .queryParam("pageid", pageId)
                                     .build())
                     .retrieve()
                     .bodyToMono(String.class)

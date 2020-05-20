@@ -9,8 +9,8 @@ import swi.wikisniffer.book.model.dto.ResultPage;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.repository.BookRepository;
 import swi.wikisniffer.book.service.BookService;
-import swi.wikisniffer.book.service.WikibooksService;
 import swi.wikisniffer.book.service.ResultPageMapper;
+import swi.wikisniffer.book.service.WikibooksService;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -66,10 +66,7 @@ public class BookServiceImpl implements BookService {
     }
 
     private Optional<Book> parseBookContent(Book book) {
-        List<String> categories = new ArrayList<>(book.getCategories());
-        categories.add(book.getTitle());
-        String fullTitle = String.join("/", categories);
-        Optional<String> text = wikibooksService.getPageContent(fullTitle);
+        Optional<String> text = wikibooksService.getPageContent(book.getId());
         text.ifPresent(book::setText);
         return Optional.of(book);
     }
