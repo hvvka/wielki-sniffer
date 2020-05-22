@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
@@ -105,7 +106,9 @@ public class AdvancedBookRepositoryImpl implements AdvancedBookRepository {
             filterQuery.must(getTimestampFilter(advancedQuery.getTimestampRange()));
         }
 
-        getFilterQueries(advancedQuery.getFilterFields()).forEach(filterQuery::must);
+        if (advancedQuery.getFilterFields() != null) {
+            getFilterQueries(advancedQuery.getFilterFields()).forEach(filterQuery::must);
+        }
 
         return filterQuery;
     }
@@ -118,10 +121,17 @@ public class AdvancedBookRepositoryImpl implements AdvancedBookRepository {
 
     private QueryBuilder getTimestampFilter(DateRange timestampRange) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(Book.TIMESTAMP_FORMAT);
+        RangeQueryBuilder timestampRangeQuery = QueryBuilders.rangeQuery(swi.wikisniffer.book.model.dto.filter.Field.TIMESTAMP.getName());
 
-        return QueryBuilders.rangeQuery(swi.wikisniffer.book.model.dto.filter.Field.TIMESTAMP.getName())
-                .gte(dateFormat.format(timestampRange.getFrom()))
-                .lte(dateFormat.format(timestampRange.getTo()));
+        if (timestampRange.getFrom() != null) {
+            timestampRangeQuery.gte(dateFormat.format(timestampRange.getFrom()));
+        }
+
+        if (timestampRange.getTo() != null) {
+            timestampRangeQuery.lte(dateFormat.format(timestampRange.getTo()));
+        }
+
+        return timestampRangeQuery;
     }
 
     private BoolQueryBuilder getBookQuery(AdvancedQuery advancedQuery) {
