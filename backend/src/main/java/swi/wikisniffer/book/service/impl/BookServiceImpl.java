@@ -1,9 +1,9 @@
 package swi.wikisniffer.book.service.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import swi.wikisniffer.book.model.dto.*;
+import swi.wikisniffer.book.model.dto.AdvancedQuery;
+import swi.wikisniffer.book.model.dto.BookHint;
+import swi.wikisniffer.book.model.dto.ResultPage;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.repository.BookRepository;
 import swi.wikisniffer.book.service.BookService;
@@ -19,15 +19,17 @@ import java.util.Optional;
 @Service
 public class BookServiceImpl implements BookService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BookServiceImpl.class);
-
     private final Searcher searcher;
     private final BookRepository bookRepository;
     private final WikibooksService wikibooksService;
     private final ResultPageMapper resultPageMapper;
     private final BookMapper bookMapper;
 
-    public BookServiceImpl(Searcher searcher, BookRepository bookRepository, WikibooksService wikibooksService, ResultPageMapper resultPageMapper, BookMapper bookMapper) {
+    public BookServiceImpl(Searcher searcher,
+                           BookRepository bookRepository,
+                           WikibooksService wikibooksService,
+                           ResultPageMapper resultPageMapper,
+                           BookMapper bookMapper) {
         this.searcher = searcher;
         this.bookRepository = bookRepository;
         this.wikibooksService = wikibooksService;
@@ -39,19 +41,6 @@ public class BookServiceImpl implements BookService {
     public Optional<Book> getFullBook(String id) {
         Optional<Book> book = bookRepository.findById(id);
         return book.flatMap(this::parseFullBookContent);
-    }
-
-    @Override
-    public Optional<BookResult> getBookResult(String id) {
-        Optional<Book> book = bookRepository.findById(id);
-        return book.flatMap(this::parseBookResultsChapters);
-    }
-
-    private Optional<BookResult> parseBookResultsChapters(Book book) {
-        List<Chapter> chapters = wikibooksService.getPageChapters(book.getId());
-        BookResult bookResult = BookMapper.mapToResult(book);
-        bookResult.setContents(chapters);
-        return Optional.of(bookResult);
     }
 
     @Override

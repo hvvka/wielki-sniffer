@@ -2,7 +2,6 @@ package swi.wikisniffer.book.service;
 
 import swi.wikisniffer.book.model.dto.AdvancedQuery;
 import swi.wikisniffer.book.model.dto.BookHint;
-import swi.wikisniffer.book.model.dto.BookResult;
 import swi.wikisniffer.book.model.dto.ResultPage;
 import swi.wikisniffer.book.model.searchengine.Book;
 
@@ -13,9 +12,7 @@ import java.util.Optional;
 public interface BookService {
 
     Optional<Book> getFullBook(String id);
-
-    Optional<BookResult> getBookResult(String id);
-
+    
     List<BookHint> getBookHints(String query, int hintCount);
 
     ResultPage getBooks(String query, int pageNumber, int pageSize) throws ParseException;

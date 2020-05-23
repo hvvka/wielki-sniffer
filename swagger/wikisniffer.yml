@@ -14,29 +14,6 @@ schemes:
 - "https"
 - "http"
 paths:
-  /book/{id}/result:
-    get:
-      tags:
-      - "book result"
-      summary: "Get book without text by identifier"
-      operationId: "getBookResult"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "id"
-        in: "path"
-        description: "Book unique identifier"
-        required: true
-        type: "integer"
-      responses:
-        "200":
-          description: "Successfully loaded book"
-          schema:
-            $ref: "#/definitions/BookResult"
-        "404":
-          description: "Book not found"
-        "500":
-          description: "Unexpected server error"
   /book/{id}:
     get:
       tags:
@@ -215,6 +192,9 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Chapter"
+      text:
+        type: "string"
+        example: 'Flowers - Advanced Nature General Conference Skill Level 3 Year of Introduction: 1949 Contents Contents 1. Have the Flower Honor.[] Instructions and tips for earning the honor can be found in the chapter. 2. Photograph, collect pictures of or sketch 75 species of flowers. Make a scrapbook from these and correctly label each flower.[] Rather than finding a specimen and comparing it to thousands of ...'
   BookHint:
     type: "object"
     properties:
