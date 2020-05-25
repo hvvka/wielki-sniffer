@@ -11,5 +11,6 @@ export default {
     },                                  // last search request body
     searchResults: null,                // actual displaying data
     searchPageNumber: 0,                // last fetched page
-    searchPageSize: 10,                 // how many pages per result. should be changed programmatically
+    searchPageSize: 6,                  // how many pages per result. should be changed programmatically
+    coverImage: null,
 }

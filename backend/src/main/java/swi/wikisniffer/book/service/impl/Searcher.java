@@ -1,9 +1,5 @@
 package swi.wikisniffer.book.service.impl;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.terms.TermsAggregationBuilder;
@@ -18,7 +14,12 @@ import org.springframework.stereotype.Service;
 import swi.wikisniffer.book.model.dto.AdvancedQuery;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.repository.BookRepository;
+import swi.wikisniffer.book.service.mapper.BookMapper;
 import swi.wikisniffer.query.service.QuerySplitter;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static swi.wikisniffer.book.repository.AggregateField.*;
 

@@ -1,17 +1,17 @@
-package swi.wikisniffer.book.service.impl;
+package swi.wikisniffer.book.service.mapper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Node;
 import org.springframework.stereotype.Service;
 import swi.wikisniffer.book.model.Cover;
 import swi.wikisniffer.book.model.dto.BookHint;
 import swi.wikisniffer.book.model.dto.BookResult;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.service.wikibooks.WikibooksClient;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class BookMapper {
@@ -31,6 +31,33 @@ public class BookMapper {
         return hints;
     }
 
+    public BookResult mapToResult(Book book) {
+        BookResult result = new BookResult();
+        String text = getBookResultText(book);
+        return result.setCategories(book.getCategories())
+                .setContents(new ArrayList<>())
+                .setContributor(book.getContributor())
+                .setCoverImage(book.getFirstImage())
+                .setId(Integer.parseInt(book.getId()))
+                .setTimestamp(book.getTimestamp())
+                .setTitle(book.getTitle())
+                .setText(text);
+    }
+
+    private String getBookResultText(Book book) {
+        String text;
+        Optional<String> pageText = wikibooksClient.getPageText(book.getId());
+        if (pageText.isPresent()) {
+            Document doc = Jsoup.parseBodyFragment(pageText.get());
+            doc.select("img,a").forEach(Node::remove);
+            text = doc.text();
+        } else {
+            text = book.getText();
+        }
+        text = text.length() > 400 ? text.substring(0, 400).concat("...") : text;
+        return text;
+    }
+
     public List<BookResult> mapToResult(List<Book> books) {
         List<BookResult> results = books.stream()
                 .map(this::mapToResult)
@@ -38,19 +65,6 @@ public class BookMapper {
         fillImageUrls(results);
 
         return results;
-    }
-
-    private BookResult mapToResult(Book book) {
-        BookResult result = new BookResult();
-        result.setCategories(book.getCategories())
-                .setContents(new ArrayList<>()) // TODO generate contents
-                .setContributor(book.getContributor())
-                .setCoverImage(book.getFirstImage())
-                .setId(Integer.parseInt(book.getId()))
-                .setTimestamp(book.getTimestamp())
-                .setTitle(book.getTitle());
-
-        return result;
     }
 
     private BookHint mapToHint(Book book) {

@@ -1,12 +1,4 @@
-package swi.wikisniffer.book.service;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+package swi.wikisniffer.book.service.mapper;
 
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.max.Max;
@@ -18,7 +10,14 @@ import swi.wikisniffer.book.model.dto.Facet;
 import swi.wikisniffer.book.model.dto.ResultPage;
 import swi.wikisniffer.book.model.searchengine.Book;
 import swi.wikisniffer.book.repository.AggregateField;
-import swi.wikisniffer.book.service.impl.BookMapper;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static swi.wikisniffer.book.repository.AggregateField.*;
 

@@ -22,8 +22,8 @@ public class BookController {
     }
 
     @GetMapping(value = "/book/{id}")
-    public Optional<Book> getBook(@PathVariable("id") String id) {
-        LOG.info("GET book id={}", id);
-        return bookService.getOne(id);
+    public Optional<Book> getFullBook(@PathVariable("id") String id) {
+        LOG.info("GET full book id={}", id);
+        return bookService.getFullBook(id);
     }
 }

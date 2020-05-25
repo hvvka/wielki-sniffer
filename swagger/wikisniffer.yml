@@ -17,17 +17,17 @@ paths:
   /book/{id}:
     get:
       tags:
-      - "book"
-      summary: "Get book by identifier"
-      operationId: "getBook"
+        - "full book"
+      summary: "Get full book by identifier"
+      operationId: "getFullBook"
       produces:
-      - "application/json"
+        - "application/json"
       parameters:
-      - name: "id"
-        in: "path"
-        description: "Book unique identifier"
-        required: true
-        type: "integer"
+        - name: "id"
+          in: "path"
+          description: "Book unique identifier"
+          required: true
+          type: "integer"
       responses:
         "200":
           description: "Successfully loaded book"
@@ -192,6 +192,9 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Chapter"
+      text:
+        type: "string"
+        example: 'Flowers - Advanced Nature General Conference Skill Level 3 Year of Introduction: 1949 Contents Contents 1. Have the Flower Honor.[] Instructions and tips for earning the honor can be found in the chapter. 2. Photograph, collect pictures of or sketch 75 species of flowers. Make a scrapbook from these and correctly label each flower.[] Rather than finding a specimen and comparing it to thousands of ...'
   BookHint:
     type: "object"
     properties:

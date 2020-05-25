@@ -1,12 +1,14 @@
 package swi.wikisniffer.book.model.dto;
 
-import java.util.List;
-
 import swi.wikisniffer.book.model.Cover;
 
+import java.util.List;
+
 public class BookResult implements Cover {
+
     private int id;
     private String title;
+    private String text;
     private List<String> categories;
     private String contributor;
     private String timestamp;
@@ -82,6 +84,15 @@ public class BookResult implements Cover {
     public BookResult setContents(List<Chapter> contents) {
         this.contents = contents;
 
+        return this;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public BookResult setText(String text) {
+        this.text = text;
         return this;
     }
 }
