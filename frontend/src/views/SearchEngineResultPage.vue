@@ -8,17 +8,30 @@
                         <h4>Contributors</h4>
                         <div v-for="contributor in getSearchResults.contributors"
                              :key="'contributor_'+contributor.name">
-                            <span class="link" @click="contributorClickHandler">{{contributor.name}} ({{contributor.count}})</span>
+                            <span class="link"
+                                  :class="{selected: isSelected(contributor.name, getCurrentContributors)}"
+                                  @click="contributorClickHandler(contributor.name)">{{contributor.name}} ({{contributor.count}})</span>
                         </div>
 
                         <h4>Publication date</h4>
-                        <div>2001 - 2019</div>
-                        <div>---*------*----</div>
+                        <Calendar :show-icon="true" :showButtonBar="true" v-bind:value="getFromDate"
+                                  :monthNavigator="true" :yearNavigator="true" yearRange="1800:2020"
+                                  :locale="pl"
+                                  v-on:date-select="dateFromChanged"
+                                  v-on:clear-click="dateToChanged(null)"/>
+                        <div class="mt-2">
+                            <Calendar :show-icon="true" :showButtonBar="true" v-bind:value="getToDate"
+                                      :monthNavigator="true" :yearNavigator="true" yearRange="1800:2020"
+                                      :locale="pl"
+                                    v-on:date-select="dateToChanged"
+                                    v-on:clear-click="dateToChanged(null)"/>
+                        </div>
 
                         <h4>Category</h4>
                         <div v-for="category in getSearchResults.categories" :key="'category_'+category.name">
                             <span class="link"
-                                  @click="categoryClickHandler">{{category.name}} ({{category.count}})</span>
+                                  :class="{selected: isSelected(category.name, getCurrentCategories)}"
+                                  @click="categoryClickHandler(category.name)">{{category.name}} ({{category.count}})</span>
                         </div>
                     </div>
                 </div>
@@ -31,23 +44,27 @@
                     <v-spacer></v-spacer>
                     <v-col class="text-right">
                         <Dropdown v-model="sortBy" :options="sortOptions"
+                                  @change="sortFieldChangeHandler"
                                   optionLabel="displayOption"
                                   optionValue="value"
                                   placeholder="Sort by" width="200px"></Dropdown>
                         <v-icon
                                 class="ml-2"
-                                @click="sortAscending = !sortAscending">
+                                @click="sortIconClickHandler">
                             {{ sortAscending ? 'mdi-sort-alphabetical-ascending' : 'mdi-sort-alphabetical-descending'}}
                         </v-icon>
                     </v-col>
                 </v-row>
 
-                <v-row>
-                    <v-col v-for="(book, index) in getSearchResults.books" :key="index" xs="12" sm="12" md="6" lg="6"
+<!--                <v-row>-->
+                <transition-group name="list" tag="div" class="row"
+                                  enter-active-class="animated fadeIn">
+                    <v-col v-for="(book, index) in getSearchResults.books" :key="index+'_'+book.id" xs="12" sm="12" md="6" lg="6"
                            xl="6">
                         <BookCard :book="book"></BookCard>
                     </v-col>
-                </v-row>
+                </transition-group>
+<!--                </v-row>-->
                 <v-row justify="center" v-if="loading">
                     <div class="lds-ripple">
                         <div></div>
@@ -70,7 +87,7 @@
             BookCard
         },
         computed: {
-            ...mapGetters(['getSearchResults']),
+            ...mapGetters(['getSearchResults', 'getCurrentCategories', 'getCurrentContributors', 'getFromDate', 'getToDate']),
         },
         data() {
             return {
@@ -107,6 +124,8 @@
                 },
                 loading: false,
                 executingDelayLeftPanelTransition: false,
+                fromDate: null,
+                toDate: null,
             }
         },
         methods: {
@@ -141,11 +160,39 @@
                 // do actions that will effect in render more data
                 return this.$store.dispatch('moreResults')
             },
-            contributorClickHandler() {
-                alert('Nie wolno ☝️☝️☝️')
+            contributorClickHandler(contributor) {
+                if (this.getCurrentContributors.includes(contributor))
+                    this.$store.dispatch('removeContributor', contributor).then(() => {this.scrollTop();});
+                else
+                    this.$store.dispatch('addContributor', contributor).then(() => {this.scrollTop();})
             },
-            categoryClickHandler() {
-                alert('Nie można ☝️☝️☝️')
+            categoryClickHandler(category) {
+                if (this.getCurrentCategories.includes(category))
+                    this.$store.dispatch('removeCategory', category).then(() => {this.scrollTop();});
+                else
+                    this.$store.dispatch('addCategory', category).then(() => {this.scrollTop();})
+            },
+            scrollTop() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            },
+            isSelected(item, list) {
+                return list.includes(item);
+            },
+            sortIconClickHandler() {
+                this.sortAscending = !this.sortAscending;
+                this.$store.dispatch('setSort', {direction: this.sortAscending ? 'ASC' : 'DESC', field: this.sortBy})
+            },
+            sortFieldChangeHandler() {
+                this.$store.dispatch('setSort', {direction: this.sortAscending ? 'ASC' : 'DESC', field: this.sortBy})
+            },
+            dateFromChanged(value) {
+                this.$store.dispatch('setFromDate', value)
+            },
+            dateToChanged(value) {
+                this.$store.dispatch('setToDate', value)
             }
         },
         mounted() {
@@ -161,6 +208,11 @@
     .link:hover {
         text-decoration: underline;
         cursor: pointer;
+    }
+    .selected {
+        font-weight: bold;
+        text-decoration: underline;
+        font-size: 120% !important;
     }
 
     /*loading spinner*/

@@ -31,5 +31,8 @@ export default {
         state.searchData = null;
         state.searchResults = null;
         state.searchPageNumber = 0;
+    },
+    [MUTATION_TYPES.RESET_SEARCH_PAGE_NUMBER](state) {
+        state.searchPageNumber = 0;
     }
 }

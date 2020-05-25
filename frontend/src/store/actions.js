@@ -61,6 +61,19 @@ const buildSearchRequestBody = (title, notTitle, text, notText, fromDate, toDate
     return requestBody;
 };
 
+const buildSearchRequestBodyFromState = (searchData) => {
+    return buildSearchRequestBody(
+        searchData.title,
+        searchData.notTitle,
+        searchData.text,
+        searchData.notText,
+        searchData.fromDate,
+        searchData.toDate,
+        searchData.contributors,
+        searchData.categories,
+        searchData.sortField
+    )
+};
 
 export default {
     simpleSearch: ({commit, state}, searchString) => {
@@ -145,5 +158,95 @@ export default {
                 })
         });
 
+    },
+    updateResults: ({commit, state}) => {
+        return new Promise((resolve, reject) => {
+            Vue.axios.post(`http://localhost:8080/v1/search?pageSize=${state.searchPageSize}&pageNumber=0`, state.searchBody)
+                .then(response => {
+                    commit(MUTATION_TYPES.SET_SEARCH_RESULTS, response.data);
+                    resolve()
+                })
+                .catch(error => {
+                    console.log(error);
+                    reject()
+                })
+        });
+    },
+    addCategory: ({commit, dispatch, state}, data) => {
+        let newSearchData = state.searchData;
+
+        if (data !== null) {
+            newSearchData.categories = [data];
+        } else {
+            newSearchData.categories = [];
+        }
+
+        let requestBody = buildSearchRequestBodyFromState(state.searchData);
+
+        commit(MUTATION_TYPES.RESET_SEARCH_PAGE_NUMBER);
+        commit(MUTATION_TYPES.SET_SEARCH_DATA, newSearchData);
+        commit(MUTATION_TYPES.SET_SEARCH_BODY, requestBody);
+
+        return dispatch('updateResults')
+    },
+    removeCategory: ({dispatch}) => {
+        return dispatch('addCategory', null)
+    },
+    addContributor: ({commit, dispatch, state}, data) => {
+        let newSearchData = state.searchData;
+
+        if (data !== null) {
+            newSearchData.contributors = [data];
+        } else {
+            newSearchData.contributors = [];
+        }
+
+        let requestBody = buildSearchRequestBodyFromState(state.searchData);
+
+        commit(MUTATION_TYPES.RESET_SEARCH_PAGE_NUMBER);
+        commit(MUTATION_TYPES.SET_SEARCH_DATA, newSearchData);
+        commit(MUTATION_TYPES.SET_SEARCH_BODY, requestBody);
+
+        return dispatch('updateResults')
+    },
+    removeContributor: ({dispatch}) => {
+        return dispatch('addContributor', null)
+    },
+    setSort: ({commit, dispatch, state}, data) => {
+        let newSearchData = state.searchData;
+        newSearchData.sortField = data;
+
+        let requestBody = buildSearchRequestBodyFromState(state.searchData);
+
+        commit(MUTATION_TYPES.RESET_SEARCH_PAGE_NUMBER);
+        commit(MUTATION_TYPES.SET_SEARCH_DATA, newSearchData);
+        commit(MUTATION_TYPES.SET_SEARCH_BODY, requestBody);
+
+        return dispatch('updateResults')
+    },
+    setFromDate: ({commit, dispatch, state}, data) => {
+        let newSearchData = state.searchData;
+        newSearchData.fromDate = data;
+
+        let requestBody = buildSearchRequestBodyFromState(state.searchData);
+
+        commit(MUTATION_TYPES.RESET_SEARCH_PAGE_NUMBER);
+        commit(MUTATION_TYPES.SET_SEARCH_DATA, newSearchData);
+        commit(MUTATION_TYPES.SET_SEARCH_BODY, requestBody);
+
+        return dispatch('updateResults')
+    },
+
+    setToDate: ({commit, dispatch, state}, data) => {
+        let newSearchData = state.searchData;
+        newSearchData.toDate = data;
+
+        let requestBody = buildSearchRequestBodyFromState(state.searchData);
+
+        commit(MUTATION_TYPES.RESET_SEARCH_PAGE_NUMBER);
+        commit(MUTATION_TYPES.SET_SEARCH_DATA, newSearchData);
+        commit(MUTATION_TYPES.SET_SEARCH_BODY, requestBody);
+
+        return dispatch('updateResults')
     },
 }
