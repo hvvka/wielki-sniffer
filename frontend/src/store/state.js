@@ -13,4 +13,5 @@ export default {
     searchPageNumber: 0,                // last fetched page
     searchPageSize: 6,                  // how many pages per result. should be changed programmatically
     coverImage: null,
+    fullScreenLoader: false,
 }

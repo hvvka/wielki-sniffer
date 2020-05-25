@@ -40,11 +40,11 @@
       <router-link to="/">
         <span style="color: black; font-size: 9px;">Home</span>
       </router-link>
-       |
+      |
       <router-link to="/page/18778">
         <span style="color: black; font-size: 9px;">Sample page</span>
       </router-link>
-       |
+      |
       <router-link to="/search-results">
         <span style="color: black; font-size: 9px;">SERP</span>
       </router-link>
@@ -55,15 +55,27 @@
       <v-spacer></v-spacer>
       <div>&copy; {{ new Date().getFullYear() }}</div>
     </v-footer>
+    <div class="overlay" style="" v-if="getFullScreenLoader">
+      <div class="loading-spinner">
+        <div class="dot dotOne"></div>
+        <div class="dot dotTwo"></div>
+        <div class="dot dotThree"></div>
+      </div>
+    </div>
   </v-app>
 </template>
 
 <script>
+  import {mapGetters} from 'vuex'
+
   export default {
     data: () => ({
       searching: false,
       hints: []
     }),
+    computed: {
+      ...mapGetters(['getFullScreenLoader']),
+    },
     methods: {
       displayHintFunc(item) {
         return item.title + " (" + item.id + ")";
@@ -87,7 +99,7 @@
       requestForHints(input) {
         if (!input) {
           this.hints = []; // fix for clearing hints when user delete all input
-                            // this prevents from entering enter key by user and injecting value from hints array
+          // this prevents from entering enter key by user and injecting value from hints array
           return;
         }
 
@@ -96,7 +108,7 @@
         }
 
         this.searching = true;
-        this.axios.get('http://localhost:8080/v1/search/hint?query='+input+'&hintCount=6')
+        this.axios.get('http://localhost:8080/v1/search/hint?query=' + input + '&hintCount=6')
           .then(response => {
             // console.log(response);
             this.hints = response.data;
@@ -119,7 +131,7 @@
       doSimpleSearch(queryString) {
         this.$store.dispatch('simpleSearch', queryString)
           .then(() => {
-            this.$router.push({ name: 'Search Engine Result Page'})
+            this.$router.push({name: 'Search Engine Result Page'})
           })
           .catch(error => {
             console.error(error);
@@ -138,6 +150,7 @@
   .whiteAnchor {
     color: white;
   }
+
   .shadow:not(:active) {
     text-shadow: 0.1px 0.1px black;
     -webkit-text-stroke: 0.1px gray;
@@ -148,4 +161,354 @@
     color: rgba(0, 0, 0, 0.87) !important;
   }
 
+  .overlay {
+    background: rgba(255, 255, 255, 0.6);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .loading-spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+  }
+
+  .dot {
+    background: black;
+    border-radius: 100%;
+    color: white;
+    height: 8px;
+    line-height: 8px;
+    text-align: center;
+    width: 8px;
+  }
+
+  .dotOne {
+    -webkit-animation: dotOneKeyframes 5s ease infinite;
+    background: #12991b;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .dotTwo {
+    -webkit-animation: dotTwoKeyframes 5s ease 0.4166666666666s infinite;
+    background: #14a91e;
+    position: absolute;
+    top: 0;
+    left: 14px;
+  }
+
+  .dotThree {
+    -webkit-animation: dotThreeKeyframes 5s ease 0.83333333333s infinite;
+    background: #16b821;
+    position: absolute;
+    top: 14px;
+    left: 14px;
+  }
+
+  @-webkit-keyframes dotOneKeyframes {
+    0% {
+      top: 0;
+      left: 0;
+    }
+    8.3333333333% {
+      top: 14px;
+      left: 0;
+    }
+    16.6666666666% {
+
+    }
+    25% {
+      top: 14px;
+      left: 0;
+    }
+    33.3333333333% {
+      top: 14px;
+      left: 14px;
+    }
+    41.6666666666% {
+
+    }
+    50% {
+      top: 14px;
+      left: 14px;
+    }
+    58.3333333333% {
+      top: 0;
+      left: 14px;
+    }
+    66.6666666666% {
+
+    }
+    75% {
+      top: 0;
+      left: 14px;
+    }
+    83.3333333333% {
+      top: 0;
+      left: 0;
+    }
+    91.6666666666% {
+
+    }
+    100% {
+
+    }
+  }
+
+  @keyframes dotOneKeyframes {
+    0% {
+      top: 0;
+      left: 0;
+    }
+    8.3333333333% {
+      top: 14px;
+      left: 0;
+    }
+    16.6666666666% {
+
+    }
+    25% {
+      top: 14px;
+      left: 0;
+    }
+    33.3333333333% {
+      top: 14px;
+      left: 14px;
+    }
+    41.6666666666% {
+
+    }
+    50% {
+      top: 14px;
+      left: 14px;
+    }
+    58.3333333333% {
+      top: 0;
+      left: 14px;
+    }
+    66.6666666666% {
+
+    }
+    75% {
+      top: 0;
+      left: 14px;
+    }
+    83.3333333333% {
+      top: 0;
+      left: 0;
+    }
+    91.6666666666% {
+
+    }
+    100% {
+
+    }
+  }
+
+  @-webkit-keyframes dotTwoKeyframes {
+    0% {
+      top: 0;
+      left: 14px;
+    }
+    8.3333333333% {
+      top: 0;
+      left: 0;
+    }
+    16.6666666666% {
+
+    }
+    25% {
+      top: 0;
+      left: 0;
+    }
+    33.3333333333% {
+      top: 14px;
+      left: 0;
+    }
+    41.6666666666% {
+
+    }
+    50% {
+      top: 14px;
+      left: 0;
+    }
+    58.3333333333% {
+      top: 14px;
+      left: 14px;
+    }
+    66.6666666666% {
+
+    }
+    75% {
+      top: 14px;
+      left: 14px;
+    }
+    83.3333333333% {
+      top: 0;
+      left: 14px;
+    }
+    91.6666666666% {
+
+    }
+    100% {
+
+    }
+  }
+
+  @keyframes dotTwoKeyframes {
+    0% {
+      top: 0;
+      left: 14px;
+    }
+    8.3333333333% {
+      top: 0;
+      left: 0;
+    }
+    16.6666666666% {
+
+    }
+    25% {
+      top: 0;
+      left: 0;
+    }
+    33.3333333333% {
+      top: 14px;
+      left: 0;
+    }
+    41.6666666666% {
+
+    }
+    50% {
+      top: 14px;
+      left: 0;
+    }
+    58.3333333333% {
+      top: 14px;
+      left: 14px;
+    }
+    66.6666666666% {
+
+    }
+    75% {
+      top: 14px;
+      left: 14px;
+    }
+    83.3333333333% {
+      top: 0;
+      left: 14px;
+    }
+    91.6666666666% {
+
+    }
+    100% {
+
+    }
+  }
+
+  @-webkit-keyframes dotThreeKeyframes {
+    0% {
+      top: 14px;
+      left: 14px;
+    }
+    8.3333333333% {
+      top: 0;
+      left: 14px;
+    }
+    16.6666666666% {
+
+    }
+    25% {
+      top: 0;
+      left: 14px;
+    }
+    33.3333333333% {
+      top: 0;
+      left: 0;
+    }
+    41.6666666666% {
+
+    }
+    50% {
+      top: 0;
+      left: 0;
+    }
+    58.3333333333% {
+      top: 14px;
+      left: 0;
+    }
+    66.6666666666% {
+
+    }
+    75% {
+      top: 14px;
+      left: 0;
+    }
+    83.3333333333% {
+      top: 14px;
+      left: 14px;
+    }
+    91.6666666666% {
+
+    }
+    100% {
+
+    }
+  }
+
+  @keyframes dotThreeKeyframes {
+    0% {
+      top: 14px;
+      left: 14px;
+    }
+    8.3333333333% {
+      top: 0;
+      left: 14px;
+    }
+    16.6666666666% {
+
+    }
+    25% {
+      top: 0;
+      left: 14px;
+    }
+    33.3333333333% {
+      top: 0;
+      left: 0;
+    }
+    41.6666666666% {
+
+    }
+    50% {
+      top: 0;
+      left: 0;
+    }
+    58.3333333333% {
+      top: 14px;
+      left: 0;
+    }
+    66.6666666666% {
+
+    }
+    75% {
+      top: 14px;
+      left: 0;
+    }
+    83.3333333333% {
+      top: 14px;
+      left: 14px;
+    }
+    91.6666666666% {
+
+    }
+    100% {
+
+    }
+  }
 </style>

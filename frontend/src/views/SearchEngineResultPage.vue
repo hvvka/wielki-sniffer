@@ -18,7 +18,7 @@
                                   :monthNavigator="true" :yearNavigator="true" yearRange="1800:2020"
                                   :locale="pl"
                                   v-on:date-select="dateFromChanged"
-                                  v-on:clear-click="dateToChanged(null)"/>
+                                  v-on:clear-click="dateFromChanged(null)"/>
                         <div class="mt-2">
                             <Calendar :show-icon="true" :showButtonBar="true" v-bind:value="getToDate"
                                       :monthNavigator="true" :yearNavigator="true" yearRange="1800:2020"

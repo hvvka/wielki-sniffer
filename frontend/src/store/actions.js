@@ -53,10 +53,10 @@ const buildSearchRequestBody = (title, notTitle, text, notText, fromDate, toDate
     };
     addFilteredData(contributors, 'CONTRIBUTOR', requestBody);
     addFilteredData(categories, 'CATEGORIES', requestBody);
-
-    if (fromDate === null || toDate === null) {
-        delete requestBody.timestampRange;
-    }
+    //
+    // if (fromDate === null || toDate === null) {
+    //     delete requestBody.timestampRange;
+    // }
 
     return requestBody;
 };
@@ -77,6 +77,8 @@ const buildSearchRequestBodyFromState = (searchData) => {
 
 export default {
     simpleSearch: ({commit, state}, searchString) => {
+        commit(MUTATION_TYPES.SET_FULL_SCREEN_LOADER);
+
         commit(MUTATION_TYPES.CLEAR_SEARCH);
         return new Promise((resolve, reject) => {
             commit(MUTATION_TYPES.SET_SEARCH_QUERY, searchString);
@@ -88,6 +90,9 @@ export default {
                 .catch(error => {
                     console.log(error);
                     reject()
+                })
+                .finally(() => {
+                    commit(MUTATION_TYPES.CLEAR_FULL_SCREEN_LOADER)
                 })
         })
     },
@@ -130,6 +135,7 @@ export default {
 
     },
     advancedSearch: ({commit, state}, data) => {
+        commit(MUTATION_TYPES.SET_FULL_SCREEN_LOADER);
         commit(MUTATION_TYPES.CLEAR_SEARCH);
 
         let requestBody = buildSearchRequestBody(
@@ -156,10 +162,14 @@ export default {
                     console.log(error);
                     reject()
                 })
+                .finally(() => {
+                    commit(MUTATION_TYPES.CLEAR_FULL_SCREEN_LOADER)
+                })
         });
 
     },
     updateResults: ({commit, state}) => {
+        commit(MUTATION_TYPES.SET_FULL_SCREEN_LOADER);
         return new Promise((resolve, reject) => {
             Vue.axios.post(`http://localhost:8080/v1/search?pageSize=${state.searchPageSize}&pageNumber=0`, state.searchBody)
                 .then(response => {
@@ -169,6 +179,9 @@ export default {
                 .catch(error => {
                     console.log(error);
                     reject()
+                })
+                .finally(() => {
+                    commit(MUTATION_TYPES.CLEAR_FULL_SCREEN_LOADER)
                 })
         });
     },
@@ -249,4 +262,12 @@ export default {
 
         return dispatch('updateResults')
     },
+    setFullScreenLoader({commit}, value) {
+        if (value) {
+            commit(MUTATION_TYPES.SET_FULL_SCREEN_LOADER)
+        }
+        else {
+            commit(MUTATION_TYPES.CLEAR_FULL_SCREEN_LOADER);
+        }
+    }
 }

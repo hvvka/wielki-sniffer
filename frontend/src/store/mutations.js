@@ -34,5 +34,11 @@ export default {
     },
     [MUTATION_TYPES.RESET_SEARCH_PAGE_NUMBER](state) {
         state.searchPageNumber = 0;
+    },
+    [MUTATION_TYPES.SET_FULL_SCREEN_LOADER](state) {
+        state.fullScreenLoader = true;
+    },
+    [MUTATION_TYPES.CLEAR_FULL_SCREEN_LOADER](state) {
+        state.fullScreenLoader = false;
     }
 }
