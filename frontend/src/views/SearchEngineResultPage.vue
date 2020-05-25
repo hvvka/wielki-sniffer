@@ -6,7 +6,7 @@
                     <h3 class="mt-1">Filters</h3>
                     <div class="mt-7">
                         <h4>Contributors</h4>
-                        <div v-for="contributor in getSearchResults.contributors"
+                        <div v-for="contributor in getSearchResults.contributors.sort((e1, e2) => e2.count - e1.count)"
                              :key="'contributor_'+contributor.name">
                             <span class="link"
                                   :class="{selected: isSelected(contributor.name, getCurrentContributors)}"
@@ -28,7 +28,7 @@
                         </div>
 
                         <h4>Category</h4>
-                        <div v-for="category in getSearchResults.categories" :key="'category_'+category.name">
+                        <div v-for="category in getSearchResults.categories.sort((e1, e2) => e2.count - e1.count)" :key="'category_'+category.name">
                             <span class="link"
                                   :class="{selected: isSelected(category.name, getCurrentCategories)}"
                                   @click="categoryClickHandler(category.name)">{{category.name}} ({{category.count}})</span>

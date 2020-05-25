@@ -80,6 +80,31 @@ export default {
         commit(MUTATION_TYPES.SET_FULL_SCREEN_LOADER);
 
         commit(MUTATION_TYPES.CLEAR_SEARCH);
+        const searchElements = [];
+        let tmp = '';
+        searchString.split(' ').forEach(splitChipsElement => {
+            if (splitChipsElement.startsWith('"')) { tmp = splitChipsElement; }
+            else if (tmp !== '') {
+                searchElements.push(tmp + " " + splitChipsElement);
+                tmp = '';
+            } else searchElements.push(splitChipsElement);
+        });
+        let convertedIntoAdvancedSearchData = {
+            title: [],
+            notTitle: [],
+            text: searchElements,
+            notText: [],
+            fromDate: null,
+            toDate: null,
+            contributors: [],
+            categories: [],
+            sortField: {
+                field: "RELEVANCE",
+                direction: "ASC"
+            }
+        };
+        commit(MUTATION_TYPES.SET_SEARCH_DATA, convertedIntoAdvancedSearchData);
+
         return new Promise((resolve, reject) => {
             commit(MUTATION_TYPES.SET_SEARCH_QUERY, searchString);
             Vue.axios.get(`http://localhost:8080/v1/search?query=${searchString}&pageSize=${state.searchPageSize}&pageNumber=0`)
