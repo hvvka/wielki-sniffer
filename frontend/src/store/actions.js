@@ -75,6 +75,12 @@ const buildSearchRequestBodyFromState = (searchData) => {
     )
 };
 
+var sortResponseData = (responseData) => {
+    responseData.categories.sort((e1, e2) => e2.count - e1.count);
+    responseData.contributors.sort((e1, e2) => e2.count - e1.count);
+    return responseData
+};
+
 export default {
     simpleSearch: ({commit, state}, searchString) => {
         commit(MUTATION_TYPES.SET_FULL_SCREEN_LOADER);
@@ -109,7 +115,7 @@ export default {
             commit(MUTATION_TYPES.SET_SEARCH_QUERY, searchString);
             Vue.axios.get(`http://localhost:8080/v1/search?query=${searchString}&pageSize=${state.searchPageSize}&pageNumber=0`)
                 .then(response => {
-                    commit(MUTATION_TYPES.SET_SEARCH_RESULTS, response.data);
+                    commit(MUTATION_TYPES.SET_SEARCH_RESULTS, sortResponseData(response.data));
                     resolve()
                 })
                 .catch(error => {
@@ -131,7 +137,7 @@ export default {
                             commit(MUTATION_TYPES.INCREASE_SEARCH_PAGE);
                         }
 
-                        commit(MUTATION_TYPES.APPEND_MORE_RESULTS, response.data);
+                        commit(MUTATION_TYPES.APPEND_MORE_RESULTS, sortResponseData(response.data));
                         resolve()
                     })
                     .catch(error => {
@@ -148,7 +154,7 @@ export default {
                             commit(MUTATION_TYPES.INCREASE_SEARCH_PAGE);
                         }
 
-                        commit(MUTATION_TYPES.APPEND_MORE_RESULTS, response.data);
+                        commit(MUTATION_TYPES.APPEND_MORE_RESULTS, sortResponseData(response.data));
                         resolve()
                     })
                     .catch(error => {
@@ -179,7 +185,7 @@ export default {
             commit(MUTATION_TYPES.SET_SEARCH_DATA, data);
             Vue.axios.post(`http://localhost:8080/v1/search?pageSize=${state.searchPageSize}&pageNumber=0`, requestBody)
                 .then(response => {
-                    commit(MUTATION_TYPES.SET_SEARCH_RESULTS, response.data);
+                    commit(MUTATION_TYPES.SET_SEARCH_RESULTS, sortResponseData(response.data));
                     commit(MUTATION_TYPES.SET_SEARCH_BODY, requestBody);
                     resolve()
                 })
@@ -198,7 +204,7 @@ export default {
         return new Promise((resolve, reject) => {
             Vue.axios.post(`http://localhost:8080/v1/search?pageSize=${state.searchPageSize}&pageNumber=0`, state.searchBody)
                 .then(response => {
-                    commit(MUTATION_TYPES.SET_SEARCH_RESULTS, response.data);
+                    commit(MUTATION_TYPES.SET_SEARCH_RESULTS, sortResponseData(response.data));
                     resolve()
                 })
                 .catch(error => {
