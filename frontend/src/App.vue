@@ -166,7 +166,7 @@
   }
 
   .shadow:not(:active) {
-    text-shadow: 0.1px 0.1px black;
+    text-shadow: 0 0 black;
     -webkit-text-stroke: 0.1px gray;
   }
 
@@ -527,9 +527,13 @@
   }
 
   .loading-cat {
-    position: absolute;
-    top: 30%;
-    left: 30%;
+    position: fixed;
+    top: -100%;
+    right: -100%;
+    left: -100%;
+    bottom: -100%;
+    margin: auto;
+    z-index: 0;
     width: 480px;
     height: 360px;
     animation: 2.74s linear infinite loading-cat;
