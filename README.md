@@ -1,5 +1,7 @@
 # e9s-s6r (enwikibooks-seacher)
 
+[![Build Status](https://travis-ci.com/hvvka/wielki-sniffer.svg?token=AtJu5RATvaNahLGCYye5&branch=master)](https://travis-ci.com/hvvka/wielki-sniffer)
+
 ## Run
 
 ```bash
