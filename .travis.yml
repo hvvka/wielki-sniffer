@@ -1,0 +1,12 @@
+sudo: required
+dist: trusty
+language: java
+
+script:
+  - docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+  - cd frontend
+  - docker build -t $DOCKER_USERNAME/e9s-s6r-front:latest .
+  - docker push $DOCKER_USERNAME/e9s-s6r-front
+  - cd ../backend
+  - docker build -t $DOCKER_USERNAME/e9s-s6r-back:latest .
+  - docker push $DOCKER_USERNAME/e9s-s6r-back
