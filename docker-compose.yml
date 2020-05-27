@@ -21,10 +21,8 @@ services:
             timeout: 10s
             retries: 8
     backend:
+        image: hvvka/e9s-s6r-back
         container_name: backend
-        build:
-            context: ./backend
-            dockerfile: Dockerfile
         ports:
             - "8080:8080"
         depends_on:
@@ -57,10 +55,8 @@ services:
         environment:
             - SWAGGER_JSON=/swagger/wikisniffer.yml
     frontend:
+        image: hvvka/e9s-s6r-front
         container_name: frontend
-        build:
-            context: frontend
-            dockerfile: Dockerfile
         ports:
             - "9090:80"
 volumes:
